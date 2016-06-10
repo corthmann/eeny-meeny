@@ -3,18 +3,16 @@ module EenyMeeny::MiddlewareHelper
     cookies.has_key?(experiment_cookie_name(experiment))
   end
 
-  def write_experiment_cookie(response, experiment)
+  def generate_cookie_value(experiment)
     variation = experiment.pick_variation
-    response.set_cookie(experiment_cookie_name(experiment),
-                        {
-                          expires: (experiment.end_at || 1.year.from_now),
-                          value: Marshal.dump({
-                            name: experiment.name,
-                            variation: variation,
-                          })
-                        }
-
-    )
+    {
+        same_site: :strict,
+        expires: (experiment.end_at || 1.year.from_now),
+        value: Marshal.dump({
+                                name: experiment.name,
+                                variation: variation,
+                            })
+    }
   end
 
   private

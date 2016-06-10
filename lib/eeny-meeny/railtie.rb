@@ -11,7 +11,7 @@ module EenyMeeny
       ActionController::Base.send :include, EenyMeeny::ExperimentHelper
       ActionView::Base.send :include, EenyMeeny::ExperimentHelper
 
-      app.middleware.insert_after 'ActionDispatch::Cookies', EenyMeeny::Middleware, config.eeny_meeny.experiments
+      app.middleware.insert_before 'ActionDispatch::Cookies', EenyMeeny::Middleware, config.eeny_meeny.experiments
     end
   end
 end
