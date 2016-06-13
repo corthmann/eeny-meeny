@@ -8,6 +8,7 @@ module EenyMeeny::MiddlewareHelper
     {
         same_site: :strict,
         expires: (experiment.end_at || 1.year.from_now),
+        httponly: true,
         value: Marshal.dump({
                                 name: experiment.name,
                                 variation: variation,
@@ -17,6 +18,6 @@ module EenyMeeny::MiddlewareHelper
 
   private
   def experiment_cookie_name(experiment)
-    EenyMeeny::EENY_MEENY_COOKIE_PREFIX+experiment.id.to_s
+    EenyMeeny::EENY_MEENY_COOKIE_PREFIX+experiment.id.to_s+'_v'+experiment.version.to_s
   end
 end

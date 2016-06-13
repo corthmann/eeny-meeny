@@ -2,16 +2,19 @@ require 'rack'
 require 'time'
 require 'eeny-meeny/middleware_helper'
 require 'eeny-meeny/experiment'
+require 'eeny-meeny/encryptor'
 
 module EenyMeeny
   class Middleware
     include EenyMeeny::MiddlewareHelper
 
-    def initialize(app, experiments)
+    def initialize(app, experiments, secure, secret)
       @app = app
       @experiments = experiments.map do |id, experiment|
         EenyMeeny::Experiment.new(id, **experiment)
       end
+      @secure = secure
+      @encryptor = EenyMeeny::Encryptor.new(secret) if secure
     end
 
     def call(env)
@@ -27,6 +30,7 @@ module EenyMeeny
         # skip experiments that already have a cookie
         unless has_experiment_cookie?(cookies, experiment)
           cookie_value = generate_cookie_value(experiment)
+          cookie_value[:value] = @encryptor.encrypt(cookie_value[:value]) if @secure
           # Set HTTP_COOKIE header to enable experiment on first pageview
           Rack::Utils.set_cookie_header!(env,
                                          experiment_cookie_name(experiment),

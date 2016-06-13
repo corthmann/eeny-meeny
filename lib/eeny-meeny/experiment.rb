@@ -2,11 +2,12 @@ require 'eeny-meeny/variation'
 
 module EenyMeeny
   class Experiment
-    attr_reader :id, :name, :variations, :end_at, :start_at
+    attr_reader :id, :name, :version, :variations, :end_at, :start_at
 
-    def initialize(id, name: '', variations: [], start_at: nil, end_at: nil)
+    def initialize(id, name: '', version: 1, variations: [], start_at: nil, end_at: nil)
       @id = id
       @name = name
+      @version = version
       @variations = variations.map do |variation_id, variation|
         Variation.new(variation_id, **variation)
       end
@@ -18,7 +19,7 @@ module EenyMeeny
 
     def pick_variation
       Hash[
-          @variations.map do |variation| variation.weight
+          @variations.map do |variation|
             [variation, variation.weight]
           end
       ].max_by { |_, weight| rand ** (1.0 / weight) }.first
