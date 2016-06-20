@@ -11,10 +11,10 @@ module EenyMeeny
       @variations = variations.map do |variation_id, variation|
         Variation.new(variation_id, **variation)
       end
+      @total_weight = (@variations.empty? ? 1.0 : @variations.sum { |variation| variation.weight.to_f })
+
       @start_at = start_at
       @end_at = end_at
-
-      #TODO: validate id is unique and variations are present
     end
 
     def pick_variation
@@ -22,7 +22,7 @@ module EenyMeeny
           @variations.map do |variation|
             [variation, variation.weight]
           end
-      ].max_by { |_, weight| rand ** (1.0 / weight) }.first
+      ].max_by { |_, weight| rand ** (@total_weight / weight) }.first
     end
   end
 end

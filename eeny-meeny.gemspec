@@ -3,7 +3,7 @@ require File.expand_path('../lib/eeny-meeny/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = 'eeny-meeny'
   s.version     = EenyMeeny::VERSION.dup
-  s.date        = '2016-06-10'
+  s.date        = '2016-06-20'
   s.summary     = "A simple split testing tool for Rails"
   s.description = "A simple split testing tool for Rails"
   s.authors     = ["Christian Orthmann"]
