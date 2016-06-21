@@ -1,0 +1,10 @@
+:my_page:
+  :name: My Page
+  :version: 1
+  :variations:
+    :old:
+      :name: Old My Page
+      :weight: 0.02
+    :new:
+      :name: New My Page
+      :weight: 0.98

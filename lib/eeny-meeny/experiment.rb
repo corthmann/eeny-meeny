@@ -1,4 +1,5 @@
 require 'eeny-meeny/variation'
+require 'active_support/core_ext/enumerable'
 
 module EenyMeeny
   class Experiment

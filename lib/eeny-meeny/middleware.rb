@@ -1,5 +1,6 @@
 require 'rack'
 require 'time'
+require 'active_support/time'
 require 'eeny-meeny/middleware_helper'
 require 'eeny-meeny/experiment'
 require 'eeny-meeny/encryptor'
@@ -22,6 +23,7 @@ module EenyMeeny
       cookies = request.cookies
       now = Time.zone.now
       new_cookies = {}
+      existing_set_cookie_header = env['Set-Cookie']
       # Prepare for experiments.
       @experiments.each do |experiment|
         # Skip experiments that haven't started yet or if it ended
@@ -29,18 +31,24 @@ module EenyMeeny
         next if experiment.end_at && (now > experiment.end_at)
         # skip experiments that already have a cookie
         unless has_experiment_cookie?(cookies, experiment)
+          env['Set-Cookie'] = ''
           cookie_value = generate_cookie_value(experiment)
           cookie_value[:value] = @encryptor.encrypt(cookie_value[:value]) if @secure
           # Set HTTP_COOKIE header to enable experiment on first pageview
           Rack::Utils.set_cookie_header!(env,
                                          experiment_cookie_name(experiment),
                                          cookie_value)
+          env['HTTP_COOKIE'] = '' if env['HTTP_COOKIE'].nil?
           env['HTTP_COOKIE'] += '; ' unless env['HTTP_COOKIE'].empty?
           env['HTTP_COOKIE'] += env['Set-Cookie']
           new_cookies[experiment_cookie_name(experiment)] = cookie_value
-          # Clean up 'Set-Cookie' header.
-          env.delete('Set-Cookie')
         end
+      end
+      # Clean up 'Set-Cookie' header.
+      if existing_set_cookie_header.nil?
+        env.delete('Set-Cookie')
+      else
+        env['Set-Cookie'] = existing_set_cookie_header
       end
       # Delegate to app
       status, headers, body = @app.call(env)
