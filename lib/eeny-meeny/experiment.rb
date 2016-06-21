@@ -3,9 +3,9 @@ require 'active_support/core_ext/enumerable'
 
 module EenyMeeny
   class Experiment
-    attr_reader :id, :name, :version, :variations, :end_at, :start_at
+    attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
 
-    def initialize(id, name: '', version: 1, variations: [], start_at: nil, end_at: nil)
+    def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)
       @id = id
       @name = name
       @version = version
