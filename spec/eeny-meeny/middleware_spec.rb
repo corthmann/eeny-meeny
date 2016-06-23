@@ -2,9 +2,9 @@ require 'spec_helper'
 require 'eeny-meeny/encryptor'
 require 'eeny-meeny/middleware'
 
-def initialize_app(secure: true, secret: 'test')
+def initialize_app(secure: true, secret: 'test', path: '/', same_site: :strict)
   experiments = YAML.load_file(File.join('spec','fixtures','experiments.yml'))
-  described_class.new(app, experiments, secure, secret)
+  described_class.new(app, experiments, secure, secret, path, same_site)
 end
 
 describe EenyMeeny::Middleware do

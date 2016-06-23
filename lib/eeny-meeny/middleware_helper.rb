@@ -3,10 +3,9 @@ module EenyMeeny::MiddlewareHelper
     cookies.has_key?(experiment_cookie_name(experiment))
   end
 
-  def generate_cookie_value(experiment)
+  def generate_cookie_value(experiment, cookie_config)
     variation = experiment.pick_variation
-    {
-        same_site: :strict,
+    cookie = {
         expires: (experiment.end_at || 1.year.from_now),
         httponly: true,
         value: Marshal.dump({
@@ -14,6 +13,9 @@ module EenyMeeny::MiddlewareHelper
                                 variation: variation,
                             })
     }
+    cookie[:same_site] = cookie_config[:same_site] unless cookie_config[:same_site].nil?
+    cookie[:path] = cookie_config[:path] unless cookie_config[:path].nil?
+    cookie
   end
 
   private

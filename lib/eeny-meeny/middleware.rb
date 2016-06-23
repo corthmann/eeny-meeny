@@ -9,12 +9,13 @@ module EenyMeeny
   class Middleware
     include EenyMeeny::MiddlewareHelper
 
-    def initialize(app, experiments, secure, secret)
+    def initialize(app, experiments, secure, secret, cookie_path, cookie_same_site)
       @app = app
       @experiments = experiments.map do |id, experiment|
         EenyMeeny::Experiment.new(id, **experiment)
       end
       @secure = secure
+      @cookie_config = { path: cookie_path, same_site: cookie_same_site }
       @encryptor = EenyMeeny::Encryptor.new(secret) if secure
     end
 
@@ -32,7 +33,7 @@ module EenyMeeny
         # skip experiments that already have a cookie
         unless has_experiment_cookie?(cookies, experiment)
           env['Set-Cookie'] = ''
-          cookie_value = generate_cookie_value(experiment)
+          cookie_value = generate_cookie_value(experiment, @cookie_config)
           cookie_value[:value] = @encryptor.encrypt(cookie_value[:value]) if @secure
           # Set HTTP_COOKIE header to enable experiment on first pageview
           Rack::Utils.set_cookie_header!(env,

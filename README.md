@@ -20,6 +20,8 @@ Configuration
 
 The following configurations are available:
 
+* `config.eeny_meeny.cookies.path` Defaults to `'/'`. Sets the `path` cookie attribute. If this configuartion is set to `nil` it means that each page will get its own cookie.
+* `config.eeny_meeny.cookies.same_site` Defaults to `:strict`. Accepts: `:strict`, `:lax` and `nil`. Sets the `SameSite` cookie attribute. Selecting `nil` will disable the header on the cookie.
 * `config.eeny_meeny.secure` Boolean value. Defaults to `true` and determines if experiment cookies should be encrypted or not.
 * `config.eeny_meeny.secret` sets the secret used for encrypting experiment cookies.
 * `config.eeny_meeny.experiments` list of experiment-data. It is easiest to load this from a `.yml` file with the following structure:
@@ -45,7 +47,7 @@ Usage
 -------------
 `eeny-meeny` adds the following helpers to your controllers and views:
 
-* `participates_in?(experiement_id, variation_id: nil, version: 1)` Returns the chosen variation for the current user if he participates in the experiment.
+* `participates_in?(experiement_id, variation_id: nil)` Returns the chosen variation for the current user if he participates in the experiment.
 
 Full page split tests
 -------------
