@@ -11,7 +11,7 @@ module EenyMeeny::ExperimentHelper
   def eeny_meeny_cookie(experiment_id)
     cookie = cookies[EenyMeeny::EENY_MEENY_COOKIE_PREFIX+experiment_id.to_s+'_v'+experiment_version(experiment_id).to_s]
     if cookie
-      Marshal.load(decrypt(cookie))
+      Marshal.load(decrypt(cookie)) rescue nil
     end
   end
 

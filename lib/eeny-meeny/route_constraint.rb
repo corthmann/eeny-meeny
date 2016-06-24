@@ -22,7 +22,7 @@ module EenyMeeny
     def eeny_meeny_cookie(request)
       cookie = request.cookie_jar[EenyMeeny::EENY_MEENY_COOKIE_PREFIX+@experiment_id.to_s+'_v'+@version.to_s]
       if cookie
-        Marshal.load(decrypt(cookie))
+        Marshal.load(decrypt(cookie)) rescue nil
       end
     end
 
