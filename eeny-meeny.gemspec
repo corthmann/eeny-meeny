@@ -3,7 +3,7 @@ require File.expand_path('../lib/eeny-meeny/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = 'eeny-meeny'
   s.version     = EenyMeeny::VERSION.dup
-  s.date        = '2016-06-20'
+  s.date        = '2016-07-03'
   s.summary     = "A simple split testing tool for Rails"
   s.description = "A simple split testing tool for Rails"
   s.authors     = ["Christian Orthmann"]
@@ -16,7 +16,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('rake', '~> 10')
   s.add_development_dependency('rspec', '~> 3')
-  s.add_development_dependency('webmock', '~> 1')
   s.add_development_dependency('simplecov', '~> 0')
   s.add_development_dependency('simplecov-rcov', '~> 0')
   s.add_development_dependency('yard', '~> 0')

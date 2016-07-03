@@ -54,6 +54,7 @@ Full page split tests
 If you want to completely redesign a page but test it in production as a split test against your old page, using identical routes, then it can be achieved as follows:
 
  1. Create an experiment like this:
+
     ```
     :example_page:
         :name: Test V1 vs. V2
@@ -64,10 +65,12 @@ If you want to completely redesign a page but test it in production as a split t
             :name: Second version of the page
             :weight: 0.1
     ```
+
  2. Namespace your controller and views (ex. `ExamplesController` becommes `V1::ExamplesController` )
  3. Copy the route(s) for `ExamplesController` and use `controller: 'v1/examples`
  4. Add `require 'eeny-meeny/route_constraint` to `routes.rb`
  4. Surround your `v1/examples` route(s) with the following constraint:
+
     ```
     constraints(EenyMeeny::RouteConstraint.new(:example_page, variation_id: :v1) do
         # your v1 routes goes here.
