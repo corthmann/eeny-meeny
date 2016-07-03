@@ -1,7 +1,7 @@
 eeny-meeny
 ==========================
-
-
+[![Code Climate](https://codeclimate.com/github/corthmann/eeny-meeny/badges/gpa.svg)](https://codeclimate.com/github/corthmann/eeny-meeny)
+[![Test Coverage](https://codeclimate.com/github/corthmann/eeny-meeny/badges/coverage.svg)](https://codeclimate.com/github/corthmann/eeny-meeny/coverage)
 
 Installation
 -------------
