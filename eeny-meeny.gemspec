@@ -5,7 +5,6 @@ Gem::Specification.new do |s|
   s.version     = EenyMeeny::VERSION.dup
   s.date        = '2016-07-03'
   s.summary     = "A simple split testing tool for Rails"
-  s.description = "A simple split testing tool for Rails"
   s.authors     = ["Christian Orthmann"]
   s.email       = 'christian.orthmann@gmail.com'
   s.require_path = 'lib'
@@ -19,6 +18,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('simplecov', '~> 0')
   s.add_development_dependency('simplecov-rcov', '~> 0')
   s.add_development_dependency('yard', '~> 0')
-  s.add_runtime_dependency('rack')
+  s.add_runtime_dependency('rack', '>= 1.2.1', '< 2')
   s.add_runtime_dependency('activesupport', '>= 3.0.0', '< 5.0.0')
 end
