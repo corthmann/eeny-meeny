@@ -1,22 +1,17 @@
 require 'rack'
 require 'time'
 require 'active_support/time'
-require 'eeny-meeny/middleware_helper'
-require 'eeny-meeny/experiment'
-require 'eeny-meeny/encryptor'
+require 'eeny-meeny/models/experiment'
+require 'eeny-meeny/models/encryptor'
+require 'eeny-meeny/models/cookie'
 
 module EenyMeeny
   class Middleware
-    include EenyMeeny::MiddlewareHelper
 
-    def initialize(app, experiments, secure, secret, cookie_path, cookie_same_site)
+    def initialize(app)
       @app = app
-      @experiments = experiments.map do |id, experiment|
-        EenyMeeny::Experiment.new(id, **experiment)
-      end
-      @secure = secure
-      @cookie_config = { path: cookie_path, same_site: cookie_same_site }
-      @encryptor = EenyMeeny::Encryptor.new(secret) if secure
+      @experiments = EenyMeeny::Experiment.find_all
+      @cookie_config = EenyMeeny.config.cookies
     end
 
     def call(env)
@@ -31,18 +26,17 @@ module EenyMeeny
         next if experiment.start_at && (now < experiment.start_at)
         next if experiment.end_at && (now > experiment.end_at)
         # skip experiments that already have a cookie
-        unless has_experiment_cookie?(cookies, experiment)
+        unless cookies.has_key?(EenyMeeny::Cookie.cookie_name(experiment))
           env['Set-Cookie'] = ''
-          cookie_value = generate_cookie_value(experiment, @cookie_config)
-          cookie_value[:value] = @encryptor.encrypt(cookie_value[:value]) if @secure
+          cookie = EenyMeeny::Cookie.create_for_experiment(experiment, @cookie_config)
           # Set HTTP_COOKIE header to enable experiment on first pageview
           Rack::Utils.set_cookie_header!(env,
-                                         experiment_cookie_name(experiment),
-                                         cookie_value)
+                                         cookie.name,
+                                         cookie.to_h)
           env['HTTP_COOKIE'] = '' if env['HTTP_COOKIE'].nil?
           env['HTTP_COOKIE'] += '; ' unless env['HTTP_COOKIE'].empty?
           env['HTTP_COOKIE'] += env['Set-Cookie']
-          new_cookies[experiment_cookie_name(experiment)] = cookie_value
+          new_cookies[cookie.name] = cookie
         end
       end
       # Clean up 'Set-Cookie' header.
@@ -56,7 +50,7 @@ module EenyMeeny
       response = Rack::Response.new(body, status, headers)
       # Add new cookies to 'Set-Cookie' header
       new_cookies.each do |key, value|
-        response.set_cookie(key,value)
+        response.set_cookie(key,value.to_h)
       end
       response.finish
     end

@@ -1,10 +1,21 @@
-require 'eeny-meeny/variation'
+require 'eeny-meeny/models/variation'
 require 'active_support/time'
 require 'active_support/core_ext/enumerable'
 
 module EenyMeeny
   class Experiment
     attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
+
+    def self.find_all
+      EenyMeeny.config.experiments.map do |id, experiment|
+        new(id, **experiment)
+      end
+    end
+
+    def self.find_by_id(experiment_id)
+      experiment = EenyMeeny.config.experiments[experiment_id.to_sym]
+      new(experiment_id, **experiment) if experiment
+    end
 
     def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)
       @id = id

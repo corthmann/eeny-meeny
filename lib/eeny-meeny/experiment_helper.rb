@@ -1,21 +1,22 @@
-require 'eeny-meeny/shared_methods'
+require 'eeny-meeny/models/cookie'
+require 'eeny-meeny/models/experiment'
 
 module EenyMeeny::ExperimentHelper
-  @@eeny_meeny_encryptor = nil
 
   def participates_in?(experiment_id, variation_id: nil)
-    cookie = eeny_meeny_cookie(experiment_id)
+    experiment = EenyMeeny::Experiment.find_by_id(experiment_id)
+    cookie = read_cookie(EenyMeeny::Cookie.cookie_name(experiment))
     cookie[:variation] unless cookie.nil? || (variation_id.present? && variation_id != cookie[:variation].id)
+  end
+
+  def smoke_test?(smoke_test_id, version: 1)
+    cookie = read_cookie(EenyMeeny::Cookie.smoke_test_name(smoke_test_id, version: version))
+    cookie[:variation] unless cookie.nil?
   end
 
   private
 
-  def eeny_meeny_cookie(experiment_id)
-    cookie = cookies[EenyMeeny::EENY_MEENY_COOKIE_PREFIX+experiment_id.to_s+'_v'+experiment_version(experiment_id).to_s]
-    if cookie
-      Marshal.load(decrypt(cookie)) rescue nil
-    end
+  def read_cookie(cookie_name)
+    EenyMeeny::Cookie.read(cookies[cookie_name])
   end
-
-  include EenyMeeny::SharedMethods
 end

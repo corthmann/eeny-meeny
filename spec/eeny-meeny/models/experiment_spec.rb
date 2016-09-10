@@ -1,6 +1,6 @@
 require 'spec_helper'
-require 'eeny-meeny/experiment'
-require 'eeny-meeny/variation'
+require 'eeny-meeny/models/experiment'
+require 'eeny-meeny/models/variation'
 
 describe EenyMeeny::Experiment do
   describe 'when initialized' do
@@ -59,4 +59,46 @@ describe EenyMeeny::Experiment do
       end
     end
   end
+
+  describe '.find_all' do
+    context 'when the EenyMeeny is configured with experiments', experiments: true do
+      it 'returns those experiments' do
+        instances = described_class.find_all
+        expect(instances).to be_a Array
+        expect(instances.size).to eq(1)
+        instances.each do |instance|
+          expect(instance).to be_a EenyMeeny::Experiment
+        end
+      end
+    end
+
+    context 'when EenyMeeny is not configured with experiments' do
+      it 'returns an empty array' do
+        expect(described_class.find_all).to eq([])
+      end
+    end
+  end
+
+  describe '.find_by_id' do
+    context 'when EenyMeeny is configured with experiments', experiments: true do
+      context 'and the given id exists' do
+        it 'returns the experiment' do
+          expect(described_class.find_by_id(:my_page)).to be_a EenyMeeny::Experiment
+        end
+      end
+
+      context 'and the given id does not exist' do
+        it 'returns nil' do
+          expect(described_class.find_by_id(:experiment_missing)).to be_nil
+        end
+      end
+    end
+
+    context 'when EenyMeeny is not configured with experiments' do
+      it 'returns nil' do
+        expect(described_class.find_by_id(:experiment_missing)).to be_nil
+      end
+    end
+  end
+
 end

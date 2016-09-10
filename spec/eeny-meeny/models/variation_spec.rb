@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'eeny-meeny/variation'
+require 'eeny-meeny/models/variation'
 
 describe EenyMeeny::Variation do
   describe 'when initialized' do
