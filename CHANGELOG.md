@@ -1,3 +1,24 @@
+### 2.0.0 (2016-09-11)
+
+Features:
+
+    - Added helper and route constraint for smoke tests.
+    - Added rake tasks for creating eeny-meeny cookies from the commandline.
+
+Bugfixes:
+
+    - Fixed experiment start_at and end_at logic.
+
+Breaking Changes:
+
+    - Changed the way the gem is configured.
+    - Replaced EenyMeeny::RouteConstraint with EenyMeeny::ExperimentConstraint and EenyMeeny::SmokeTestConstraint.
+
+Other Changes:
+
+    - Changed default cookie expires header from '1.year.from_now' to '1.month.from_now'.
+    - Improve docuemtation.
+
 ### 1.0.0 (2016-07-03)
 
 Features:
