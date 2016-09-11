@@ -47,13 +47,15 @@ The following configurations are available:
 
 Valid cookie attributes:
 
-* `domain`
-* `expires`
-* `httponly`
-* `max_age`
+* `domain` Sets the domain scope for the eeny-meeny cookies.
+* `expires` Sets the date/time where the cookie gets deleted from the browser. If `end_at` have been specified for the experiment, then the `end_at` time will be used. Otherwise this value will default to `1.month.from_now`.
+* `httponly` Directs browsers not to expose cookies through channels other than HTTP (and HTTPS) requests.
+* `max_age` Can be used to set the cookie's expiration as an interval of seconds in the future, relative to the time the browser received the cookie.
 * `path` Sets the `path` cookie attribute. If this configuration is set to `nil` it means that each page will get its own cookie.
 * `same_site` Accepts: `:strict`, `:lax` and `nil`. Sets the `SameSite` cookie attribute. Selecting `nil` will disable the header on the cookie.
-* `secure`
+* `secure` Is meant to keep cookie communication limited to encrypted transmission, directing browsers to use cookies only via secure/encrypted connections.
+
+You can find more information about cookie attributes at: https://en.wikipedia.org/wiki/HTTP_cookie#Cookie_attributes
 
 Example configuration in Rails environment file:
 ```
