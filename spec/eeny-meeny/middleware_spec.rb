@@ -19,21 +19,15 @@ describe EenyMeeny::Middleware do
 
   describe 'when initialized' do
 
-    # context "with 'config.eeny_meeny.secure = true'" do
-    #   it 'creates an instance of EenyMeeny::Encryptor' do
-    #     instance = initialize_app
-    #     expect(instance.instance_variable_get(:@secure)).to be true
-    #     expect(instance.instance_variable_get(:@encryptor)).to be_a EenyMeeny::Encryptor
-    #   end
-    # end
-    #
-    # context "with 'config.eeny_meeny.secure = false'" do
-    #   it 'does not have an instance of EenyMeeny::Encryptor' do
-    #     instance = initialize_app(secure: false)
-    #     expect(instance.instance_variable_get(:@secure)).to be false
-    #     expect(instance.instance_variable_get(:@encryptor)).to be nil
-    #   end
-    # end
+    subject { initialize_app }
+
+    it 'sets the experiments' do
+      expect(subject.instance_variable_get(:@experiments)).to be
+    end
+
+    it 'sets the cookie config' do
+      expect(subject.instance_variable_get(:@cookie_config)).to be
+    end
   end
 
   describe 'when called with a GET request' do

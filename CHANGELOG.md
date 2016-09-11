@@ -1,9 +1,13 @@
-### 2.0.0 (2016-09-10)
+### 2.0.0 (2016-09-11)
 
 Features:
 
-    - Add helper for smoke tests.
-    - Add rake tasks for creating eeny-meeny cookies from the commandline.
+    - Added helper and route constraint for smoke tests.
+    - Added rake tasks for creating eeny-meeny cookies from the commandline.
+
+Bugfixes:
+
+    - Fixed experiment start_at and end_at logic.
 
 Breaking Changes:
 
