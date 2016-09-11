@@ -12,7 +12,7 @@ module EenyMeeny::ExperimentHelper
 
   def smoke_test?(smoke_test_id, version: 1)
     cookie = read_cookie(EenyMeeny::Cookie.smoke_test_name(smoke_test_id, version: version))
-    cookie[:variation] unless cookie.nil?
+    cookie unless cookie.nil?
   end
 
   private

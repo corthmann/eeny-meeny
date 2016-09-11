@@ -40,6 +40,20 @@ module EenyMeeny
       new(**options.merge(config))
     end
 
+    def self.create_for_smoke_test(smoke_test_id, version: 1, **config)
+      options = {
+          name: smoke_test_name(smoke_test_id, version: version),
+          value: Marshal.dump({
+                                  name: smoke_test_id,
+                                  version: version
+                              })
+      }
+      if EenyMeeny.config.secure
+        options[:value] = EenyMeeny.config.encryptor.encrypt(options[:value])
+      end
+      new(**options.merge(config))
+    end
+
     def self.smoke_test_name(smoke_test_id, version: 1)
       return if smoke_test_id.nil?
       SMOKE_TEST_PREFIX+smoke_test_id.to_s+'_v'+version.to_s

@@ -26,6 +26,16 @@ describe EenyMeeny::Cookie do
     end
   end
 
+  describe '.create_for_smoke_test' do
+    context 'given a smoke test id' do
+      it 'creates a cookie' do
+        instance = described_class.create_for_smoke_test(:shadow)
+        expect(instance).to be_a EenyMeeny::Cookie
+        expect(instance.name).to eq(described_class.smoke_test_name(:shadow))
+      end
+    end
+  end
+
   describe '.create_for_experiment', experiments: true do
     context 'given an experiment' do
       it 'creates a cookie' do

@@ -8,3 +8,15 @@
     :new:
       :name: New My Page
       :weight: 0.98
+:expired:
+  :name: Expired
+  :version: 1
+  :start_at: '2016-08-11T11:55:40Z'
+  :end_at: '2016-08-11T11:55:40Z'
+  :variations:
+    :old:
+      :name: Old Expired Page
+      :weight: 0.02
+    :new:
+      :name: New Expired Page
+      :weight: 0.98

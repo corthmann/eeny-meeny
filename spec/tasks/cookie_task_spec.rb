@@ -51,4 +51,22 @@ describe 'cookie.rake', experiments: true do
     end
   end
 
+  describe 'eeny_meeny:cookie:smoke_test' do
+    context 'executed with an smoke test id' do
+      it 'generates a cookie' do
+        expect {
+          Rake::Task['eeny_meeny:cookie:smoke_test'].execute(Rake::TaskArguments.new([:smoke_test_id],['shadow']))
+        }.to_not raise_error
+      end
+    end
+
+    context 'executed without arguments' do
+      it 'results in an error' do
+        expect {
+          Rake::Task['eeny_meeny:cookie:smoke_test'].execute
+        }.to raise_error(RuntimeError, "Missing 'smoke_test_id' parameter")
+      end
+    end
+  end
+
 end

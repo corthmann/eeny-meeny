@@ -25,7 +25,6 @@ module EenyMeeny
         Variation.new(variation_id, **variation)
       end
       @total_weight = (@variations.empty? ? 1.0 : @variations.sum { |variation| variation.weight.to_f })
-
       @start_at = Time.zone.parse(start_at) if start_at
       @end_at = Time.zone.parse(end_at) if end_at
     end

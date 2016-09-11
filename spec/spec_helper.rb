@@ -1,6 +1,7 @@
 require 'simplecov'
 require 'simplecov-rcov'
 require 'codeclimate-test-reporter'
+require 'active_support/time'
 
 SimpleCov.start do
   formatter SimpleCov::Formatter::MultiFormatter[
@@ -18,7 +19,6 @@ require 'yaml'
 require 'mock_rack_app'
 
 require 'eeny-meeny'
-
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true

@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('simplecov', '~> 0')
   s.add_development_dependency('simplecov-rcov', '~> 0')
   s.add_development_dependency('yard', '~> 0')
+  s.add_development_dependency('rack-test', '~> 0.6.3')
   s.add_runtime_dependency('rack', '>= 1.2.1', '< 2')
   s.add_runtime_dependency('activesupport', '>= 3.0.0', '< 5.0.0')
 end
