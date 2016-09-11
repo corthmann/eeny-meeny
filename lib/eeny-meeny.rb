@@ -17,11 +17,7 @@ module EenyMeeny
       @encryptor   = (@secure ? EenyMeeny::Encryptor.new(@secret) : nil)
     end
   end
-
-  def self.encryptor
-
-  end
-
+  
   def self.config
     @@config ||= Config.new
   end

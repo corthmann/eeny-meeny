@@ -30,6 +30,13 @@ module EenyMeeny
       @end_at = Time.zone.parse(end_at) if end_at
     end
 
+    def active?(now = Time.zone.now)
+      return true if @start_at.nil? && @end_at.nil?
+      return true if @end_at.nil? && (@start_at && (now > @start_at)) # specified start - open-ended
+      return true if @start_at.nil? && (@end_at && (now < @end_at)) # unspecified start - specified end
+      !!((@start_at && (now > @start_at)) && (@end_at && (now < @end_at))) # specified start and end
+    end
+
     def pick_variation
       Hash[
           @variations.map do |variation|

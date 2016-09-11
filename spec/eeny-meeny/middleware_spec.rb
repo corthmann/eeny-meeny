@@ -16,9 +16,6 @@ end
 describe EenyMeeny::Middleware do
 
   let(:app) { MockRackApp.new }
-  before(:example) do
-    allow(Time).to receive_message_chain(:zone, :now) { Time.now }
-  end
 
   describe 'when initialized' do
 

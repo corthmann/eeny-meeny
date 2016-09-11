@@ -22,9 +22,8 @@ module EenyMeeny
       existing_set_cookie_header = env['Set-Cookie']
       # Prepare for experiments.
       @experiments.each do |experiment|
-        # Skip experiments that haven't started yet or if it ended
-        next if experiment.start_at && (now < experiment.start_at)
-        next if experiment.end_at && (now > experiment.end_at)
+        # Skip inactive experiments
+        next unless experiment.active?(now)
         # skip experiments that already have a cookie
         unless cookies.has_key?(EenyMeeny::Cookie.cookie_name(experiment))
           env['Set-Cookie'] = ''

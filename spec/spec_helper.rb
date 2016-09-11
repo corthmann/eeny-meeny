@@ -25,6 +25,10 @@ RSpec.configure do |config|
   config.filter_run :focus
   config.order = "random"
 
+  config.before(:suite) do
+    Time.zone = 'UTC'
+  end
+
   config.before(:each) do
     EenyMeeny.reset! # reset configuration before every test.
   end
