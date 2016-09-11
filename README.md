@@ -104,6 +104,21 @@ Rake tasks
 * `eeny_meeny:cookies:experiment_variation[experiment_id,variation_id]` creates and outputs a valid cookie for the given variation of the experiment with the given experiment_id.
 * `eeny_meeny:cookies:smoke_test[smoke_test_id,version]` Creates and outputs a valid smoke test cookie for a smoke test with the given id and version. `version` will default to `1` if not given.
 
+You can execute the rake tasks like this:
+
+* `rake eeny_meeny:cookies:experimet[experiment_id]`
+* `rake eeny_meeny:cookies:experimet_variation[experiment_id, a]`
+* `rake eeny_meeny:cookies:smoke_test[shadow]`
+* `rake eeny_meeny:cookies:smoke_test[shadow,2]`
+
+You can add the resulting cookie to your browser by copying the cookie string and use the following command in the JS console of your browser.
+
+```
+document.cookie = '<cookie string excluding httponly>';
+```
+
+Please note that the `HttpOnly` attribute will prevent you from adding the cookie to your browser through JS. You will therefor have to remove the `HttpOnly` part of the cookie string before adding the cookie to your browser.
+
 Setting up Experiments
 -------------
 It is easiest to define your experiments in YAML files and load them with as shown in the **Configuration** section.
