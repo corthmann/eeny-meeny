@@ -120,12 +120,18 @@ describe EenyMeeny::Cookie do
       end
     end
 
-    # context 'when EenyMeeny.config.secure = false' do
-    #   context 'and given a valid cookie string' do
-    #     it 'returns the cookie hash' do
-    #
-    #     end
-    #   end
-    # end
+    context 'when EenyMeeny.config.secure = false' do
+      context 'and given a valid cookie string' do
+        it 'returns the cookie hash' do
+          EenyMeeny.configure do |config|
+            config.secure = false
+            config.experiments = YAML.load_file(File.join('spec','fixtures','experiments.yml'))
+          end
+          experiment = EenyMeeny::Experiment.find_by_id(:my_page)
+          valid_cookie_string = described_class.create_for_experiment(experiment).value
+          expect(described_class.read(valid_cookie_string)).to be_a Hash
+        end
+      end
+    end
   end
 end
