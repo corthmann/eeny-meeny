@@ -100,16 +100,16 @@ Rake tasks
 -------------
 `eeny-meeny` adds the following rake tasks to your project.
 
-* `eeny_meeny:cookies:experiment[experiment_id]`. Creates and outputs a valid cookie for the given experiment id.
-* `eeny_meeny:cookies:experiment_variation[experiment_id,variation_id]` creates and outputs a valid cookie for the given variation of the experiment with the given experiment_id.
-* `eeny_meeny:cookies:smoke_test[smoke_test_id,version]` Creates and outputs a valid smoke test cookie for a smoke test with the given id and version. `version` will default to `1` if not given.
+* `eeny_meeny:cookie:experiment[experiment_id]`. Creates and outputs a valid cookie for the given experiment id.
+* `eeny_meeny:cookie:experiment_variation[experiment_id,variation_id]` creates and outputs a valid cookie for the given variation of the experiment with the given experiment_id.
+* `eeny_meeny:cookie:smoke_test[smoke_test_id,version]` Creates and outputs a valid smoke test cookie for a smoke test with the given id and version. `version` will default to `1` if not given.
 
 You can execute the rake tasks like this:
 
-* `rake eeny_meeny:cookies:experimet[experiment_id]`
-* `rake eeny_meeny:cookies:experimet_variation[experiment_id, a]`
-* `rake eeny_meeny:cookies:smoke_test[shadow]`
-* `rake eeny_meeny:cookies:smoke_test[shadow,2]`
+* `rake eeny_meeny:cookie:experimet[experiment_id]`
+* `rake eeny_meeny:cookie:experimet_variation[experiment_id, a]`
+* `rake eeny_meeny:cookie:smoke_test[shadow]`
+* `rake eeny_meeny:cookie:smoke_test[shadow,2]`
 
 You can add the resulting cookie to your browser by copying the cookie string and use the following command in the JS console of your browser.
 
