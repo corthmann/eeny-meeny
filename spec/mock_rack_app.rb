@@ -16,4 +16,7 @@ class MockRackApp
     @env[key]
   end
 
+  def []=(key,value)
+    @env[key] = value
+  end
 end

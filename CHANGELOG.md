@@ -1,3 +1,14 @@
+### 2.1.0 (TBD)
+
+Features:
+
+    - Trigger experiment variations with query parameters
+    - Trigger smoke tests with query parameters
+
+Bugfixes:
+
+    - Fixed error that caused 'participates_in?' to throw error when the given experiment_id did not exist.
+
 ### 2.0.0 (2016-09-11)
 
 Features:

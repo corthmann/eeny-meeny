@@ -9,7 +9,7 @@ module EenyMeeny
     attr_reader :name, :expires, :httponly, :same_site, :path
 
     def self.create_for_experiment_variation(experiment, variation_id, config = {})
-      variation = experiment.variations.detect { |variation| variation.id == variation_id }
+      variation = experiment.variations.detect { |v| v.id == variation_id }
       raise "Variation '#{variation_id}' not found for Experiment '#{experiment.id}'" if variation.nil?
       options = {
           name: cookie_name(experiment),

@@ -24,6 +24,7 @@ The following configurations are available:
 * `cookies` Defaults to `{ http_only: true, path: '/', same_site: :strict }`. Sets the eeny-meeny cookie attributes. The valid attributes are listed in the section below.
 * `secure`  Defaults to `true`. Determines if eeny-meeny cookies should be encrypted or not.
 * `secret`  Sets the secret used for encrypting experiment cookies.
+* `query_parameters` Defaults to `{ experiment: true, smoke_test: true }`. Controls whether experiments variations and smoke tests can be triggered through query parameters.
 * `experiments` Defaults to `{}`. It is easiest to load this from a `.yml` file with `YAML.load_file(File.join('config','experiments.yml'))`. The YAML file should have a structure matching the following example:
 
 ```
@@ -118,6 +119,18 @@ document.cookie = '<cookie string excluding httponly>';
 ```
 
 Please note that the `HttpOnly` attribute will prevent you from adding the cookie to your browser through JS. You will therefor have to remove the `HttpOnly` part of the cookie string before adding the cookie to your browser.
+
+Query parameters
+-------------
+By default it is possible to trigger smoke tests and experiment variations through query parameters.
+
+Executing a request to `/?smoke_test_id=my_secret` will trigger the `my_secret` smoke test.
+
+Executing a request to `/?eeny_meeny_my_page_v1=old` will trigger the `old` varition of the `my_page` experiment.
+
+For experiments the parameter needs to match the pattern `eeny_meeny_<experiment_id>_v<experiment_version>=<variation_id>`
+
+Please note that this behavior can be disabled through the `query_parameters` configuration.
 
 Setting up Experiments
 -------------

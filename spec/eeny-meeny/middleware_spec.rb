@@ -69,6 +69,47 @@ describe EenyMeeny::Middleware do
         expect(@response['Set-Cookie']).to be nil
       end
     end
+
+    context 'and given an experiment query parameter' do
+      let(:request) { Rack::MockRequest.new(subject) }
+
+      before(:example) do
+        @response = request.get('/test?eeny_meeny_my_page_v1=old', 'CONTENT_TYPE' => 'text/plain')
+      end
+
+      it 'selects the correct variation' do
+        modified_request = Rack::Request.new(app)
+        expect(EenyMeeny::Cookie.read(modified_request.cookies['eeny_meeny_my_page_v1'])[:variation].id).to eq(:old)
+      end
+
+      it "sets the 'HTTP_COOKIE' header on the request" do
+        expect(app['HTTP_COOKIE']).to be
+        expect(app['HTTP_COOKIE']).to include('eeny_meeny_my_page_v1=')
+      end
+
+      it "sets the 'Set-Cookie' header on the response" do
+        expect(@response['Set-Cookie']).to be
+        expect(@response['Set-Cookie']).to include('eeny_meeny_my_page_v1=')
+      end
+    end
+
+    context 'and given a smoke test query parameter' do
+      let(:request) { Rack::MockRequest.new(subject) }
+
+      before(:example) do
+        @response = request.get('/test?smoke_test_id=my_smoke_test', 'CONTENT_TYPE' => 'text/plain')
+      end
+
+      it "sets the 'HTTP_COOKIE' header on the request" do
+        expect(app['HTTP_COOKIE']).to be
+        expect(app['HTTP_COOKIE']).to include('smoke_test_my_smoke_test_v1=')
+      end
+
+      it "sets the 'Set-Cookie' header on the response" do
+        expect(@response['Set-Cookie']).to be
+        expect(@response['Set-Cookie']).to include('smoke_test_my_smoke_test_v1=')
+      end
+    end
   end
 
 end
