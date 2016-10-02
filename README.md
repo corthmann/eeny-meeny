@@ -37,13 +37,11 @@ The following configurations are available:
     :a:
       :name: Variation A
       :weight: 0.8
-      :options:
-        :message: A rocks, B sucks
+      :custom_attribute: A rocks, B sucks
     :b:
       :name: Variation B
       :weight: 0.2
-      :options:
-        :message: B is an all-star!
+      :custom_attribute: B is an all-star!
 ```
 
 Valid cookie attributes:
@@ -150,7 +148,8 @@ A variation needs the following information:
 * `variation_id` This is the key that encapsulates the rest of your variation configuration in the YAML file (see `:a:` the **Configuration** section).
 * `name` The name/title of your varition.
 * `weight` The weight of the variation. Defaults to `1`. This can be a floating or integer number. The final weight of the variation will be `weight / sum_of_variation_weights`.
-* `options` (optional) a hash with variation specific information that you want stored want to use in your experiment. Notice that this information will be stored in the experiment cookie so avoid putting sensitive data in there - especially if you choose to disable the cookie encryption.
+
+You can define additional variation attributes as part of the experiment configuration. These attributes will be accessible as a `Hash` returned from the `options` method on variation objects.
 
 If you want to force all your users to get their experiment cookie updated, then you can change the `version` option on your experiment. This might for instance be useful if you want to remove an under-performing variation from your experiment. Or when gradually rolling a feature out to the public.
 

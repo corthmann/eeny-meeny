@@ -9,6 +9,10 @@ Bugfixes:
 
     - Fixed error that caused 'participates_in?' to throw error when the given experiment_id did not exist.
 
+Other Changes:
+
+    - Reduced size of experiment cookies. Now only the picked variation_id is stored in the cookie itself.
+
 ### 2.0.0 (2016-09-11)
 
 Features:

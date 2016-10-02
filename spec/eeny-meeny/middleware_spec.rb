@@ -79,7 +79,7 @@ describe EenyMeeny::Middleware do
 
       it 'selects the correct variation' do
         modified_request = Rack::Request.new(app)
-        expect(EenyMeeny::Cookie.read(modified_request.cookies['eeny_meeny_my_page_v1'])[:variation].id).to eq(:old)
+        expect(EenyMeeny::Cookie.read(modified_request.cookies['eeny_meeny_my_page_v1'])).to eq('old')
       end
 
       it "sets the 'HTTP_COOKIE' header on the request" do

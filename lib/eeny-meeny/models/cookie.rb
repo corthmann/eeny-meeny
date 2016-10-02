@@ -9,14 +9,11 @@ module EenyMeeny
     attr_reader :name, :expires, :httponly, :same_site, :path
 
     def self.create_for_experiment_variation(experiment, variation_id, config = {})
-      variation = experiment.variations.detect { |v| v.id == variation_id }
+      variation = experiment.find_variation(variation_id)
       raise "Variation '#{variation_id}' not found for Experiment '#{experiment.id}'" if variation.nil?
       options = {
           name: cookie_name(experiment),
-          value: Marshal.dump({
-                                  name: experiment.name,
-                                  variation: variation
-                              })
+          value: variation.id.to_s
       }
       options[:expires] = experiment.end_at if experiment.end_at
       if EenyMeeny.config.secure
@@ -28,10 +25,7 @@ module EenyMeeny
     def self.create_for_experiment(experiment, config = {})
       options = {
           name: cookie_name(experiment),
-          value: Marshal.dump({
-                                  name: experiment.name,
-                                  variation: experiment.pick_variation
-                              })
+          value: experiment.pick_variation.id.to_s
       }
       options[:expires] = experiment.end_at if experiment.end_at
       if EenyMeeny.config.secure
@@ -43,10 +37,7 @@ module EenyMeeny
     def self.create_for_smoke_test(smoke_test_id, version: 1, **config)
       options = {
           name: smoke_test_name(smoke_test_id, version: version),
-          value: Marshal.dump({
-                                  name: smoke_test_id,
-                                  version: version
-                              })
+          value: smoke_test_id.to_s
       }
       if EenyMeeny.config.secure
         options[:value] = EenyMeeny.config.encryptor.encrypt(options[:value])
@@ -67,8 +58,8 @@ module EenyMeeny
     def self.read(cookie_string)
       return if cookie_string.nil? || cookie_string.empty?
       begin
-        return Marshal.load(cookie_string) unless EenyMeeny.config.secure # Cookie encryption disabled.
-        Marshal.load(EenyMeeny.config.encryptor.decrypt(cookie_string))
+        return cookie_string unless EenyMeeny.config.secure # Cookie encryption disabled.
+        EenyMeeny.config.encryptor.decrypt(cookie_string)
       rescue
         nil # Return nil if cookie is invalid.
       end

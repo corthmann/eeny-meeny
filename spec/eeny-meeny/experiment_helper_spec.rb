@@ -1,9 +1,12 @@
 require 'spec_helper'
+require 'eeny-meeny/middleware'
 require 'eeny-meeny/experiment_helper'
+require 'eeny-meeny/models/experiment'
 require 'eeny-meeny/models/variation'
+require 'eeny-meeny/models/cookie'
 require 'rack/test'
 
-describe EenyMeeny::ExperimentHelper, type: :helper, experiments: true do
+describe EenyMeeny::ExperimentHelper, experiments: true do
 
   subject do
     Object.new.extend(EenyMeeny::ExperimentHelper)

@@ -11,9 +11,9 @@ module EenyMeeny
 
     def matches?(request)
       return false unless !@experiment.nil? && @experiment.active?
-      cookie = EenyMeeny::Cookie.read(request.cookie_jar[EenyMeeny::Cookie.cookie_name(@experiment)])
-      return false if cookie.nil? # Not participating in experiment
-      (@variation_id.nil? || @variation_id == cookie[:variation].id)
+      participant_variation_id = EenyMeeny::Cookie.read(request.cookie_jar[EenyMeeny::Cookie.cookie_name(@experiment)])
+      return false if participant_variation_id.nil? # Not participating in experiment
+      (@variation_id.nil? || @variation_id == participant_variation_id)
     end
   end
 end
