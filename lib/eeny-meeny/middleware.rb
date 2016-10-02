@@ -36,7 +36,7 @@ module EenyMeeny
                      EenyMeeny::Cookie.create_for_experiment(experiment, @cookie_config)
                    end
           # Set HTTP_COOKIE header to enable experiment on first pageview
-          env = add_http_cookie(env, cookie, prepend: has_experiment_trigger)
+          env = add_http_cookie(env, cookie, precede: has_experiment_trigger)
           new_cookies[cookie.name] = cookie
         end
       end
@@ -45,7 +45,7 @@ module EenyMeeny
         if request.params.has_key?('smoke_test_id') && (request.params['smoke_test_id'] =~ /[A-Za-z_]+/)
           # Set HTTP_COOKIE header to enable smoke test on first pageview
           cookie = EenyMeeny::Cookie.create_for_smoke_test(request.params['smoke_test_id'])
-          env = add_http_cookie(env, cookie, prepend: true)
+          env = add_http_cookie(env, cookie, precede: true)
           new_cookies[cookie.name] = cookie
         end
       end
@@ -66,13 +66,13 @@ module EenyMeeny
     end
 
     private
-    def add_http_cookie(env, cookie, prepend: false)
+    def add_http_cookie(env, cookie, precede: false)
       env['Set-Cookie'] = ''
       Rack::Utils.set_cookie_header!(env,
                                      cookie.name,
                                      cookie.to_h)
       env['HTTP_COOKIE'] = '' if env['HTTP_COOKIE'].nil?
-      if prepend
+      if precede
         # Prepend cookie to the 'HTTP_COOKIE' header. This ensures it overwrites existing cookies when present.
         env['HTTP_COOKIE'] = env['Set-Cookie'] + '; ' + env['HTTP_COOKIE']
       else
