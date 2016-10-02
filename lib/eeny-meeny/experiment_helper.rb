@@ -5,9 +5,10 @@ module EenyMeeny::ExperimentHelper
 
   def participates_in?(experiment_id, variation_id: nil)
     experiment = EenyMeeny::Experiment.find_by_id(experiment_id)
-    return unless experiment.active?
-    cookie = read_cookie(EenyMeeny::Cookie.cookie_name(experiment))
-    cookie[:variation] unless cookie.nil? || (variation_id.present? && variation_id != cookie[:variation].id)
+    return unless !experiment.nil? && experiment.active?
+    participant_variation_id = read_cookie(EenyMeeny::Cookie.cookie_name(experiment))
+    return if variation_id && variation_id != participant_variation_id
+    experiment.find_variation(participant_variation_id)
   end
 
   def smoke_test?(smoke_test_id, version: 1)

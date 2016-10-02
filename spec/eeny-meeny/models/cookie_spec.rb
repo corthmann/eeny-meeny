@@ -64,7 +64,7 @@ describe EenyMeeny::Cookie do
         instance = described_class.create_for_experiment_variation(experiment, :new)
         expect(instance).to be_a EenyMeeny::Cookie
         expect(instance.name).to eq(described_class.cookie_name(experiment))
-        expect(described_class.read(instance.value)[:variation].id).to eq(:new)
+        expect(described_class.read(instance.value)).to eq('new')
       end
 
       context 'and given cookie options' do
@@ -74,7 +74,7 @@ describe EenyMeeny::Cookie do
           expect(instance).to be_a EenyMeeny::Cookie
           expect(instance.name).to eq(described_class.cookie_name(experiment))
           expect(instance.same_site).to eq(:fun_stuff)
-          expect(described_class.read(instance.value)[:variation].id).to eq(:new)
+          expect(described_class.read(instance.value)).to eq('new')
         end
       end
     end
@@ -108,8 +108,8 @@ describe EenyMeeny::Cookie do
     context 'when EenyMeeny.config.secure = true' do
       context 'and given a valid cookie string' do
         it 'decrypts the string and returns the cookie hash' do
-          valid_cookie_string = 'DhtZMLAtVpWiruuq6BdQ+YEeDTK4G1p0HQLeyKFZd2+fD8YyT004p56S03yXsE/kzCASnD9O1sk1tsIHDZ8W2gq+5zQD3fu2aqqLm461FOfy0En4/LqHCP0J0VYol3Py0BlhepjSGDuJrRU7TdKZWsG2/dCiMVLjMf0Pt00NZWooUvQfRz9SCzaFL0mywoVrY1ErKKQCNEPmLREaxavCng=='
-          expect(described_class.read(valid_cookie_string)).to be_a Hash
+          valid_cookie_string = 'x0bVgNAjEdiNUk9Zfr7IoVN51c8vj8Ah2yMmTbq1ANm8tF8/XpB0kLhViHmocuAgplaIkkTpdii55Gaq0rXgzw=='
+          expect(described_class.read(valid_cookie_string)).to eq('new')
         end
       end
 
@@ -129,7 +129,7 @@ describe EenyMeeny::Cookie do
           end
           experiment = EenyMeeny::Experiment.find_by_id(:my_page)
           valid_cookie_string = described_class.create_for_experiment(experiment).value
-          expect(described_class.read(valid_cookie_string)).to be_a Hash
+          expect(described_class.read(valid_cookie_string)).to match(/old|new/)
         end
       end
     end

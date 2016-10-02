@@ -3,7 +3,7 @@ require File.expand_path('../lib/eeny-meeny/version', __FILE__)
 Gem::Specification.new do |s|
   s.name        = 'eeny-meeny'
   s.version     = EenyMeeny::VERSION.dup
-  s.date        = '2016-09-11'
+  s.date        = '2016-10-02'
   s.summary     = "A simple split and smoke testing tool for Rails"
   s.authors     = ["Christian Orthmann"]
   s.email       = 'christian.orthmann@gmail.com'

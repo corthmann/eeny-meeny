@@ -36,6 +36,10 @@ module EenyMeeny
       !!((@start_at && (now > @start_at)) && (@end_at && (now < @end_at))) # specified start and end
     end
 
+    def find_variation(variation_id)
+      @variations.detect { |v| v.id.to_s == variation_id.to_s }
+    end
+
     def pick_variation
       Hash[
           @variations.map do |variation|

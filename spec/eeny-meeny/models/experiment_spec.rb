@@ -63,6 +63,22 @@ describe EenyMeeny::Experiment do
         expect(subject.total_weight).to eq(2)
       end
 
+      describe '#find_variation' do
+        context 'given an existing variation id' do
+          it 'returns the given variation' do
+            variation = subject.find_variation(:a)
+            expect(variation).to be_a EenyMeeny::Variation
+            expect(variation.id).to eq(:a)
+          end
+        end
+
+        context 'given a non-existing variation id' do
+          it 'returns nil' do
+            expect(subject.find_variation(:this_does_not_exist)).to be_nil
+          end
+        end
+      end
+
       describe '#pick_variation' do
         it 'picks a variation' do
           expect(subject.pick_variation).to be_a EenyMeeny::Variation

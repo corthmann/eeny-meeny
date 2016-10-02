@@ -1,3 +1,18 @@
+### 2.1.0 (2016-10-02)
+
+Features:
+
+    - Trigger experiment variations with query parameters
+    - Trigger smoke tests with query parameters
+
+Bugfixes:
+
+    - Fixed error that caused 'participates_in?' to throw error when the given experiment_id did not exist.
+
+Other Changes:
+
+    - Reduced size of experiment cookies. Now only the picked variation_id is stored in the cookie itself.
+
 ### 2.0.0 (2016-09-11)
 
 Features:

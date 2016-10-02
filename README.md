@@ -24,6 +24,7 @@ The following configurations are available:
 * `cookies` Defaults to `{ http_only: true, path: '/', same_site: :strict }`. Sets the eeny-meeny cookie attributes. The valid attributes are listed in the section below.
 * `secure`  Defaults to `true`. Determines if eeny-meeny cookies should be encrypted or not.
 * `secret`  Sets the secret used for encrypting experiment cookies.
+* `query_parameters` Defaults to `{ experiment: true, smoke_test: true }`. Controls whether experiments variations and smoke tests can be triggered through query parameters.
 * `experiments` Defaults to `{}`. It is easiest to load this from a `.yml` file with `YAML.load_file(File.join('config','experiments.yml'))`. The YAML file should have a structure matching the following example:
 
 ```
@@ -36,13 +37,11 @@ The following configurations are available:
     :a:
       :name: Variation A
       :weight: 0.8
-      :options:
-        :message: A rocks, B sucks
+      :custom_attribute: A rocks, B sucks
     :b:
       :name: Variation B
       :weight: 0.2
-      :options:
-        :message: B is an all-star!
+      :custom_attribute: B is an all-star!
 ```
 
 Valid cookie attributes:
@@ -119,6 +118,18 @@ document.cookie = '<cookie string excluding httponly>';
 
 Please note that the `HttpOnly` attribute will prevent you from adding the cookie to your browser through JS. You will therefor have to remove the `HttpOnly` part of the cookie string before adding the cookie to your browser.
 
+Query parameters
+-------------
+By default it is possible to trigger smoke tests and experiment variations through query parameters.
+
+Executing a request to `/?smoke_test_id=my_secret` will trigger the `my_secret` smoke test.
+
+Executing a request to `/?eeny_meeny_my_page_v1=old` will trigger the `old` varition of the `my_page` experiment.
+
+For experiments the parameter needs to match the pattern `eeny_meeny_<experiment_id>_v<experiment_version>=<variation_id>`
+
+Please note that this behavior can be disabled through the `query_parameters` configuration.
+
 Setting up Experiments
 -------------
 It is easiest to define your experiments in YAML files and load them with as shown in the **Configuration** section.
@@ -137,7 +148,8 @@ A variation needs the following information:
 * `variation_id` This is the key that encapsulates the rest of your variation configuration in the YAML file (see `:a:` the **Configuration** section).
 * `name` The name/title of your varition.
 * `weight` The weight of the variation. Defaults to `1`. This can be a floating or integer number. The final weight of the variation will be `weight / sum_of_variation_weights`.
-* `options` (optional) a hash with variation specific information that you want stored want to use in your experiment. Notice that this information will be stored in the experiment cookie so avoid putting sensitive data in there - especially if you choose to disable the cookie encryption.
+
+You can define additional variation attributes as part of the experiment configuration. These attributes will be accessible as a `Hash` returned from the `options` method on variation objects.
 
 If you want to force all your users to get their experiment cookie updated, then you can change the `version` option on your experiment. This might for instance be useful if you want to remove an under-performing variation from your experiment. Or when gradually rolling a feature out to the public.
 
