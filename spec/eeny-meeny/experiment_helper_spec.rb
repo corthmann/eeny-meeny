@@ -29,6 +29,29 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
             allow(subject).to receive(:cookies).and_return(request_with_cookie.cookie_jar)
             expect(subject.participates_in?(:my_page)).to be_a EenyMeeny::Variation
           end
+
+          context 'and given a variation id' do
+            let(:request_with_variation_cookie) do
+              request.set_cookie(EenyMeeny::Cookie.create_for_experiment_variation(EenyMeeny::Experiment.find_by_id(:my_page), variation_id: :new).to_s)
+              request
+            end
+
+            context 'that matches the variation id the cookie' do
+              it "returns the user's experiment variation" do
+                allow(subject).to receive(:cookies).and_return(request_with_cookie.cookie_jar)
+                expect(subject.participates_in?(:my_page, variation_id: :new)).to be_a EenyMeeny::Variation
+                expect(subject.participates_in?(:my_page, variation_id: 'new')).to be_a EenyMeeny::Variation
+              end
+            end
+
+            context 'that does not match the variation id the cookie' do
+              it 'returns nil' do
+                allow(subject).to receive(:cookies).and_return(request_with_cookie.cookie_jar)
+                expect(subject.participates_in?(:my_page, variation_id: :old)).to be_nil
+                expect(subject.participates_in?(:my_page, variation_id: 'old')).to be_nil
+              end
+            end
+          end
         end
 
         context 'without an experiment cookie' do
