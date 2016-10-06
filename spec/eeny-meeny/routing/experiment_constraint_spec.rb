@@ -6,7 +6,7 @@ describe EenyMeeny::ExperimentConstraint, experiments: true do
 
   let(:request) do
     session = Rack::MockSession.new(EenyMeeny::Middleware.new(MockRackApp.new))
-    session.set_cookie('eeny_meeny_my_page_v1=IlI%2FGW9IZvayAGQbBOroxIrfr6Z116OJqdjFdrw6FOZXOrinmxQmsKw2a%2Fb8kJFP0Up%2BLr4FACovT9%2Bo0hRdcY0AJtcYqMXC96GDMSwa2HauZbjHw16Q3%2BboSnWjfaEOHmqlyxtPxQwxlr3rsT%2FYblPjqqQ%2FiPbaJUqou3LiMtpVg4V%2FJxJdhn0XJUgFMDaFWXVFYYA6VmJSFUGglhRlbg%3D%3D; path=/; expires=Tue, 11 Oct 2016 13:07:53 -0000; HttpOnly')
+    session.set_cookie('eeny_meeny_my_page_v1=ctRsrHCj21pZt%2FELsjedHRT9GkYOuIdoTwEyP9kxfI7dDS4I9g1nv77j9Umij1P44SCU7Zebdb8mqwLabTrskg%3D%3D; path=/; expires=Sun, 06 Nov 2016 11:26:01 -0000; HttpOnly')
     session
   end
 

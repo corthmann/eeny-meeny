@@ -7,7 +7,7 @@ module EenyMeeny::ExperimentHelper
     experiment = EenyMeeny::Experiment.find_by_id(experiment_id)
     return unless !experiment.nil? && experiment.active?
     participant_variation_id = read_cookie(EenyMeeny::Cookie.cookie_name(experiment))
-    return if variation_id && variation_id != participant_variation_id
+    return if variation_id && variation_id.to_s != participant_variation_id
     experiment.find_variation(participant_variation_id)
   end
 

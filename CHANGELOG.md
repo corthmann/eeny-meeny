@@ -1,3 +1,10 @@
+### 2.1.1 (2016-10-06)
+
+Bugfixes:
+
+    - Fix bug in `participates_in?` helper that prevented it from working when the `variation_id` was sent as a symbol.
+    - Fix bug in `EenyMeeny::ExperimentConstraint` that prevented it from working when the `variation_id` was sent as a symbol.
+
 ### 2.1.0 (2016-10-02)
 
 Features:
