@@ -16,7 +16,7 @@ namespace :eeny_meeny do
 
   namespace :cookie do
     desc 'Create a valid EenyMeeny experiment cookie'
-    task :experiment, [:experiment_id] => :environment do |t, args|
+    task :experiment, [:experiment_id] => :environment do |_, args|
       raise "Missing 'experiment_id' parameter" if (args['experiment_id'].nil? || args['experiment_id'].empty?)
       experiment_id = args['experiment_id'].to_sym
       cookie = write_cookie(experiment_id)
@@ -24,7 +24,7 @@ namespace :eeny_meeny do
     end
 
     desc 'Create a valid EenyMeeny experiment cookie for a specific variation'
-    task :experiment_variation, [:experiment_id, :variation_id] => :environment do |t, args|
+    task :experiment_variation, [:experiment_id, :variation_id] => :environment do |_, args|
       raise "Missing 'experiment_id' parameter" if (args['experiment_id'].nil? || args['experiment_id'].empty?)
       raise "Missing 'variation_id' parameter" if (args['variation_id'].nil? || args['variation_id'].empty?)
       experiment_id = args['experiment_id'].to_sym
@@ -34,7 +34,7 @@ namespace :eeny_meeny do
     end
 
     desc 'Create a valid EenyMeeny smoke test cookie'
-    task :smoke_test, [:smoke_test_id, :version] => :environment do |t, args|
+    task :smoke_test, [:smoke_test_id, :version] => :environment do |_, args|
       raise "Missing 'smoke_test_id' parameter" if (args['smoke_test_id'].nil? || args['smoke_test_id'].empty?)
       smoke_test_id = args['smoke_test_id']
       version       = args['version'] || 1

@@ -57,12 +57,8 @@ module EenyMeeny
 
     def self.read(cookie_string)
       return if cookie_string.nil? || cookie_string.empty?
-      begin
-        return cookie_string unless EenyMeeny.config.secure # Cookie encryption disabled.
-        EenyMeeny.config.encryptor.decrypt(cookie_string)
-      rescue
-        nil # Return nil if cookie is invalid.
-      end
+      return cookie_string unless EenyMeeny.config.secure # Cookie encryption disabled.
+      EenyMeeny.config.encryptor.decrypt(cookie_string)
     end
 
     def initialize(name: '', value: '', expires: 1.month.from_now, http_only: true, same_site: nil, path: nil)

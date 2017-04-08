@@ -1,3 +1,14 @@
+### 2.1.2 (2017-04-08)
+
+Bugfixes:
+
+    - Fix validation regex for the 'smoke_test_id' query parameter.
+
+Other Changes:
+
+    - Clean up way cookies are written to the HTTP_COOKIE header.
+    - Added Travis CI and build status badge.
+
 ### 2.1.1 (2016-10-06)
 
 Bugfixes:
