@@ -63,7 +63,8 @@ module EenyMeeny
       cookie_string = "#{cookie.name}=#{cookie.value}"
       env['HTTP_COOKIE'] = '' if env['HTTP_COOKIE'].nil?
       return env if env['HTTP_COOKIE'].sub!(/#{Regexp.escape(cookie.name)}=[^;]+/, cookie_string)
-      env['HTTP_COOKIE'] += "; #{cookie_string}"
+      env['HTTP_COOKIE'] += '; ' unless env['HTTP_COOKIE'].empty?
+      env['HTTP_COOKIE'] += cookie_string
       env
     end
   end
