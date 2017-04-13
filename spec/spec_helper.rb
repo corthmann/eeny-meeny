@@ -4,11 +4,10 @@ require 'codeclimate-test-reporter'
 require 'active_support/time'
 
 SimpleCov.start do
-  formatter SimpleCov::Formatter::MultiFormatter[
+  formatter SimpleCov::Formatter::MultiFormatter.new([
                 SimpleCov::Formatter::HTMLFormatter,
                 SimpleCov::Formatter::RcovFormatter,
-                CodeClimate::TestReporter::Formatter
-            ]
+                CodeClimate::TestReporter::Formatter])
   add_group('EenyMeeny', 'lib/eeny-meeny')
   add_group('Rake Tasks', 'lib/tasks')
   add_group('Specs', 'spec')

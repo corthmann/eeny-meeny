@@ -15,6 +15,7 @@ class MockRackApp
   def [](key)
     @env[key]
   end
+  alias_method :fetch, :[]
 
   def []=(key,value)
     @env[key] = value

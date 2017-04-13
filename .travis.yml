@@ -1,22 +1,10 @@
 language: ruby
 sudo: false
-cache: bundler
 env:
   - "RAILS_VERSION=4.2.8"
-  - "RAILS_VERSION=5.0.0"
-  - "RAILS_VERSION=master"
 rvm:
   - 2.0.0
   - 2.1.10
   - 2.2.7
   - 2.3.4
   - 2.4.1
-matrix:
-  exclude:
-    - rvm: 2.0.0
-      env: "RAILS_VERSION=5.0.0"
-    - rvm: 2.1.10
-      env: "RAILS_VERSION=5.0.0"
-  allow_failures:
-    - env: "RAILS_VERSION=master"
-    - env: "RAILS_VERSION=5.0.0"

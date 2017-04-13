@@ -9,11 +9,11 @@ module EenyMeeny
     initializer 'eeny_meeny.configure' do |app|
       # Configrue EenyMeeny (defaults set in eeny_meeny.rb)
       EenyMeeny.configure do |config|
-        config.cookies               = app.config.eeny_meeny[:cookies]          if app.config.eeny_meeny.has_key?(:cookies)
-        config.experiments           = app.config.eeny_meeny[:experiments]      if app.config.eeny_meeny.has_key?(:experiments)
-        config.secret                = app.config.eeny_meeny[:secret]           if app.config.eeny_meeny.has_key?(:secret)
-        config.secure                = app.config.eeny_meeny[:secure]           if app.config.eeny_meeny.has_key?(:secure)
-        config.query_parameters      = app.config.eeny_meeny[:query_parameters] if app.config.eeny_meeny.has_key?(:query_parameters)
+        config.cookies               = app.config.eeny_meeny[:cookies]          if app.config.eeny_meeny.key?(:cookies)
+        config.experiments           = app.config.eeny_meeny[:experiments]      if app.config.eeny_meeny.key?(:experiments)
+        config.secret                = app.config.eeny_meeny[:secret]           if app.config.eeny_meeny.key?(:secret)
+        config.secure                = app.config.eeny_meeny[:secure]           if app.config.eeny_meeny.key?(:secure)
+        config.query_parameters      = app.config.eeny_meeny[:query_parameters] if app.config.eeny_meeny.key?(:query_parameters)
       end
       # Include Helpers in ActionController and ActionView
       ActionController::Base.send :include, EenyMeeny::ExperimentHelper

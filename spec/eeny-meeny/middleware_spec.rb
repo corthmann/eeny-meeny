@@ -71,15 +71,15 @@ describe EenyMeeny::Middleware do
     end
 
     context 'and given an experiment query parameter' do
-      let(:request) { Rack::MockRequest.new(subject) }
+      let(:request) { Rack::MockRequest.new(initialize_app(secure: false)) }
 
       before(:example) do
         @response = request.get('/test?eeny_meeny_my_page_v1=old', 'CONTENT_TYPE' => 'text/plain')
       end
 
       it 'selects the correct variation' do
-        modified_request = Rack::Request.new(app)
-        expect(EenyMeeny::Cookie.read(modified_request.cookies['eeny_meeny_my_page_v1'])).to eq('old')
+        expect(app['HTTP_COOKIE']).to include('eeny_meeny_my_page_v1=old')
+        expect(app['HTTP_COOKIE']).to_not include('eeny_meeny_my_page_v1=new')
       end
 
       it "sets the 'HTTP_COOKIE' header on the request" do
