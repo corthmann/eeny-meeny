@@ -1,3 +1,9 @@
+### 2.1.3 (2017-08-15)
+
+Bugfixes:
+
+    - Fix issue where the global cookie configuration is not applied to smoke test cookies.
+
 ### 2.1.2 (2017-04-14)
 
 Bugfixes:
