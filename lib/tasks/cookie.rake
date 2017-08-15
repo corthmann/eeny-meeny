@@ -38,7 +38,7 @@ namespace :eeny_meeny do
       raise "Missing 'smoke_test_id' parameter" if (args['smoke_test_id'].nil? || args['smoke_test_id'].empty?)
       smoke_test_id = args['smoke_test_id']
       version       = args['version'] || 1
-      cookie = EenyMeeny::Cookie.create_for_smoke_test(smoke_test_id, version: version)
+      cookie = EenyMeeny::Cookie.create_for_smoke_test(smoke_test_id, EenyMeeny.config.cookies.merge(version: version))
       puts cookie
     end
   end
