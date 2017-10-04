@@ -19,7 +19,7 @@ module EenyMeeny
       ActionController::Base.send :include, EenyMeeny::ExperimentHelper
       ActionView::Base.send :include, EenyMeeny::ExperimentHelper
       # Insert Middleware
-      app.middleware.insert_before 'ActionDispatch::Cookies', EenyMeeny::Middleware
+      app.middleware.insert_before ActionDispatch::Cookies, EenyMeeny::Middleware
     end
 
     rake_tasks do
