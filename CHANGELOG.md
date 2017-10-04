@@ -1,3 +1,9 @@
+### 2.1.4 (2017-10-04)
+
+Changes:
+
+    - Update gem dependencies for Rails 5 support.
+
 ### 2.1.3 (2017-08-15)
 
 Bugfixes:
