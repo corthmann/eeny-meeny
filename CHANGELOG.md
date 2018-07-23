@@ -1,3 +1,13 @@
+### 2.2.0 (2018-07-23)
+
+Features:
+
+    - Let `Eeny::Meeny::Middleware` remove deprecated experiment cookies (for undefined and inactive experiements)
+
+Changes:
+
+    - Renamed `EenyMeeny::Cookie::COOKIE_PREFIX` to `EenyMeeny::Cookie::EXPERIMENT_PREFIX`
+
 ### 2.1.4 (2017-10-04)
 
 Changes:
