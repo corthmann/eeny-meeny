@@ -194,4 +194,17 @@ describe EenyMeeny::Experiment do
     end
   end
 
+  describe '.find_by_cookie_name', experiments: true do
+    context 'when the given cookie name matches a configured experiment' do
+      it 'returns the experiment' do
+        expect(described_class.find_by_cookie_name(:eeny_meeny_my_page_v1)).to be_a EenyMeeny::Experiment
+      end
+    end
+
+    context 'when the given cookie name does not match a configured experiment' do
+      it 'returns nil' do
+        expect(described_class.find_by_cookie_name(:eeny_meeny_undefined_experiment_v2)).to be_nil
+      end
+    end
+  end
 end

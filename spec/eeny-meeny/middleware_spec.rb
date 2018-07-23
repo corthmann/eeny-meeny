@@ -70,6 +70,22 @@ describe EenyMeeny::Middleware do
       end
     end
 
+    context 'and the request contains a cookie from an undefined experiment' do
+      let(:request) { Rack::MockRequest.new(subject) }
+
+      before(:example) do
+        @original_request_cookies = 'test=abc;eeny_meeny_undefined_experiment_v1=thevaluedoesntmatter;'
+        @response = request.get('/test',
+                                'CONTENT_TYPE' => 'text/plain',
+                                'HTTP_COOKIE' => @original_request_cookies)
+      end
+
+
+      it "instructs the browser to remove through the 'Set-Cookie' header on the response" do
+        expect(@response['Set-Cookie']).to include('eeny_meeny_undefined_experiment_v1=thevaluedoesntmatter; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 -0000; SameSite=Strict')
+      end
+    end
+
     context 'and given an experiment query parameter' do
       let(:request) { Rack::MockRequest.new(initialize_app(secure: false)) }
 

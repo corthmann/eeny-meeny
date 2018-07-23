@@ -24,6 +24,14 @@ module EenyMeeny
       query_parameters = query_hash(env)
       now              = Time.zone.now
       new_cookies      = {}
+      delete_cookies   = {}
+
+      cookies.each do |cookie_name, value|
+        if cookie_name.to_s.start_with?(EenyMeeny::Cookie::EXPERIMENT_PREFIX)
+          delete_cookies[cookie_name] = value unless EenyMeeny::Experiment.find_by_cookie_name(cookie_name)
+        end
+      end
+
       # Prepare for experiments.
       @experiments.each do |experiment|
         # Skip inactive experiments
@@ -58,6 +66,9 @@ module EenyMeeny
       # Add new cookies to 'Set-Cookie' header
       new_cookies.each do |key, value|
         response.set_cookie(key,value.to_h)
+      end
+      delete_cookies.each do |key, value|
+        response.delete_cookie(key, value: value, path: @cookie_config[:path], same_site: @cookie_config[:same_site])
       end
       response.finish
     end
