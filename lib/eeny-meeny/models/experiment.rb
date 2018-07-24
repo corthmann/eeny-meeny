@@ -4,6 +4,9 @@ require 'active_support/core_ext/enumerable'
 
 module EenyMeeny
   class Experiment
+
+    COOKIE_EXPERIMENT_ID_REGEX = /\Aeeny_meeny_(.+)_v\d+\z/.freeze
+
     attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
 
     def self.find_all
@@ -15,6 +18,12 @@ module EenyMeeny
     def self.find_by_id(experiment_id)
       experiment = EenyMeeny.config.experiments[experiment_id.to_sym]
       new(experiment_id, **experiment) if experiment
+    end
+
+    def self.find_by_cookie_name(cookie_name)
+      if cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
+        find_by_id($1)
+      end
     end
 
     def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)

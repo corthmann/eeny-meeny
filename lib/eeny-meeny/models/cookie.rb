@@ -2,7 +2,7 @@ require 'rack'
 
 module EenyMeeny
   class Cookie
-    COOKIE_PREFIX = 'eeny_meeny_'.freeze
+    EXPERIMENT_PREFIX = 'eeny_meeny_'.freeze
     SMOKE_TEST_PREFIX = 'smoke_test_'.freeze
 
     attr_accessor :value
@@ -52,7 +52,7 @@ module EenyMeeny
 
     def self.cookie_name(experiment)
       return if experiment.nil?
-      COOKIE_PREFIX+experiment.id.to_s+'_v'+experiment.version.to_s
+      EXPERIMENT_PREFIX+experiment.id.to_s+'_v'+experiment.version.to_s
     end
 
     def self.read(cookie_string)
