@@ -1,3 +1,10 @@
+### 2.2.1 (2018-09-09)
+
+Changes:
+
+    - Fix `OpenSSL::Cipher::Cipher` deprecation warning in `EenyMeeny::Encryptor`.
+    - Update Travis configuration to include Ruby version 2.2 to 2.5.
+
 ### 2.2.0 (2018-07-24)
 
 Features:
