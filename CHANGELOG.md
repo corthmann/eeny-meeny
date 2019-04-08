@@ -1,3 +1,13 @@
+### 2.2.2 (2019-04-08)
+
+Bugfixes:
+
+    - Handle scenario where EenyMeeny is configured with an empty experiments file (https://github.com/corthmann/eeny-meeny/issues/9)
+
+Other Changes:
+
+    - Update development dependency "yard" in .gemspec file
+
 ### 2.2.1 (2018-09-09)
 
 Changes:
