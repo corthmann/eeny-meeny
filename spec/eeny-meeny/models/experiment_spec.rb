@@ -170,6 +170,12 @@ describe EenyMeeny::Experiment do
         expect(described_class.find_all).to eq([])
       end
     end
+
+    context 'when EenyMeeny is configured with an empty experiments file', empty_experiments: true do
+      it 'returns an empty array' do
+        expect(described_class.find_all).to eq([])
+      end
+    end
   end
 
   describe '.find_by_id' do
@@ -188,6 +194,12 @@ describe EenyMeeny::Experiment do
     end
 
     context 'when EenyMeeny is not configured with experiments' do
+      it 'returns nil' do
+        expect(described_class.find_by_id(:experiment_missing)).to be_nil
+      end
+    end
+
+    context 'when EenyMeeny is configured with an empty experiments file', empty_experiments: true do
       it 'returns nil' do
         expect(described_class.find_by_id(:experiment_missing)).to be_nil
       end

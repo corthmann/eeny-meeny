@@ -10,12 +10,14 @@ module EenyMeeny
     attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
 
     def self.find_all
+      return [] unless EenyMeeny.config.experiments
       EenyMeeny.config.experiments.map do |id, experiment|
         new(id, **experiment)
       end
     end
 
     def self.find_by_id(experiment_id)
+      return unless EenyMeeny.config.experiments
       experiment = EenyMeeny.config.experiments[experiment_id.to_sym]
       new(experiment_id, **experiment) if experiment
     end

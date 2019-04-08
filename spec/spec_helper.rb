@@ -36,5 +36,10 @@ RSpec.configure do |config|
       config.experiments = YAML.load_file(File.join('spec','fixtures','experiments.yml'))
     end
   end
+  config.before(:each, empty_experiments: true) do
+    EenyMeeny.configure do |config|
+      config.experiments = YAML.load_file(File.join('spec','fixtures','empty_experiments.yml'))
+    end
+  end
 
 end
