@@ -85,7 +85,7 @@ module EenyMeeny
       # Skip if no valid 'smoke_test_id' query parameter present
       return env, new_cookies unless query_parameters.key?('smoke_test_id') && (query_parameters['smoke_test_id'] =~ /\A[A-Za-z_]+\z/)
       # Set HTTP_COOKIE header to enable smoke test on first pageview
-      cookie = EenyMeeny::Cookie.create_for_smoke_test(query_parameters['smoke_test_id'], @cookie_config)
+      cookie = EenyMeeny::Cookie.create_for_smoke_test(query_parameters['smoke_test_id'], **@cookie_config)
       env = add_or_replace_http_cookie(env, cookie)
       new_cookies[cookie.name] = cookie
       return env, new_cookies
