@@ -13,12 +13,12 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://rubygems.org/gems/eeny-meeny'
   s.license     = 'MIT'
 
-  s.add_development_dependency('rake', '~> 10')
+  s.add_development_dependency('rake', '~> 13')
   s.add_development_dependency('rspec', '~> 3')
   s.add_development_dependency('simplecov', '~> 0')
   s.add_development_dependency('simplecov-rcov', '~> 0')
   s.add_development_dependency('yard', '>= 0.9.11', '< 1.0.0')
-  s.add_development_dependency('rack-test', '~> 0.6.3')
+  s.add_development_dependency('rack-test', '~> 1')
   s.add_runtime_dependency('rack', '>= 1.2.1', '< 3')
-  s.add_runtime_dependency('activesupport', '>= 3.0.0', '< 6.0.0')
+  s.add_runtime_dependency('activesupport', '>= 3.0.0', '< 6.1.0')
 end
