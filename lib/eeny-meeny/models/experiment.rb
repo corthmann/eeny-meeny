@@ -25,12 +25,12 @@ module EenyMeeny
     end
 
     def self.find_by_cookie_name(cookie_name)
-      return nil unless EenyMeeny.config.experiments
-      return nil unless cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
-      experiment_id = $1
-      experiment_version = $2
-      experiment = EenyMeeny.config.experiments[experiment_id.to_sym]
-      new(experiment_id, **experiment) if experiment && experiment[:version].to_s == experiment_version
+      return unless cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
+
+      experiment = find_by_id($1)
+      return unless experiment && experiment.version.to_s == $2
+
+      experiment
     end
 
     def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)
