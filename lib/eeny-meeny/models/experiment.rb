@@ -1,3 +1,4 @@
+require 'eeny-meeny/models/cookie'
 require 'eeny-meeny/models/variation'
 require 'active_support/time'
 require 'active_support/core_ext/enumerable'
@@ -5,7 +6,9 @@ require 'active_support/core_ext/enumerable'
 module EenyMeeny
   class Experiment
 
-    COOKIE_EXPERIMENT_ID_REGEX = /\Aeeny_meeny_(.+)_v\d+\z/.freeze
+    COOKIE_EXPERIMENT_ID_REGEX = Regexp.new(
+      "\\A#{EenyMeeny::Cookie::EXPERIMENT_PREFIX}(.+)_v(\\d+)\\z"
+    ).freeze
 
     attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
 
@@ -23,9 +26,12 @@ module EenyMeeny
     end
 
     def self.find_by_cookie_name(cookie_name)
-      if cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
-        find_by_id($1)
-      end
+      return unless cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
+
+      experiment = find_by_id($1)
+      return unless experiment && experiment.version.to_s == $2
+
+      experiment
     end
 
     def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)
