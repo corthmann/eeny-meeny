@@ -1,28 +1,15 @@
 require 'simplecov'
-require 'simplecov-rcov'
-require 'codeclimate-test-reporter'
 require 'active_support/time'
-
-SimpleCov.start do
-  formatter SimpleCov::Formatter::MultiFormatter.new([
-                SimpleCov::Formatter::HTMLFormatter,
-                SimpleCov::Formatter::RcovFormatter,
-                CodeClimate::TestReporter::Formatter])
-  add_group('EenyMeeny', 'lib/eeny-meeny')
-  add_group('Rake Tasks', 'lib/tasks')
-  add_group('Specs', 'spec')
-end
-
 require 'rspec'
 require 'yaml'
 require 'mock_rack_app'
-
 require 'eeny-meeny'
 
 RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = "random"
+  config.expose_dsl_globally = true
 
   config.before(:suite) do
     Time.zone = 'UTC'
@@ -41,5 +28,4 @@ RSpec.configure do |config|
       config.experiments = YAML.load_file(File.join('spec','fixtures','empty_experiments.yml'))
     end
   end
-
 end

@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'eeny-meeny/models/variation'
 
 describe EenyMeeny::Variation do

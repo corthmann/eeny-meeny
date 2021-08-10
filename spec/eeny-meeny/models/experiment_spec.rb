@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'eeny-meeny/models/experiment'
 require 'eeny-meeny/models/variation'
 
@@ -158,7 +157,7 @@ describe EenyMeeny::Experiment do
       it 'returns those experiments' do
         instances = described_class.find_all
         expect(instances).to be_a Array
-        expect(instances.size).to eq(2)
+        expect(instances.size).to eq(3)
         instances.each do |instance|
           expect(instance).to be_a EenyMeeny::Experiment
         end
@@ -210,6 +209,12 @@ describe EenyMeeny::Experiment do
     context 'when the given cookie name matches a configured experiment' do
       it 'returns the experiment' do
         expect(described_class.find_by_cookie_name(:eeny_meeny_my_page_v1)).to be_a EenyMeeny::Experiment
+      end
+    end
+
+    context 'when the given cookie name does not match the experiment version' do
+      it 'returns the experiment' do
+        expect(described_class.find_by_cookie_name(:eeny_meeny_versioned_v2)).to be_nil
       end
     end
 
