@@ -1,6 +1,5 @@
 *.rbc
 capybara-*.html
-.rspec
 /log
 /tmp
 /db/*.sqlite3
@@ -35,3 +34,6 @@ bower.json
 
 # Ignore Gem lock file
 Gemfile.lock
+
+# Ignore locally defined ruby version
+.ruby-version

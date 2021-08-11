@@ -1,6 +1,5 @@
-require 'spec_helper'
 require 'eeny-meeny/middleware'
-require 'eeny-meeny/experiment_helper'
+require 'eeny-meeny/helpers/experiment_helper'
 require 'eeny-meeny/models/experiment'
 require 'eeny-meeny/models/variation'
 require 'eeny-meeny/models/cookie'

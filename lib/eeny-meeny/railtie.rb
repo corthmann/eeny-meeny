@@ -1,6 +1,6 @@
 require 'eeny-meeny'
-require 'eeny-meeny/experiment_helper'
 require 'eeny-meeny/middleware'
+require 'eeny-meeny/helpers/experiment_helper'
 
 module EenyMeeny
   class Railtie < Rails::Railtie
@@ -15,11 +15,15 @@ module EenyMeeny
         config.secure                = app.config.eeny_meeny[:secure]           if app.config.eeny_meeny.key?(:secure)
         config.query_parameters      = app.config.eeny_meeny[:query_parameters] if app.config.eeny_meeny.key?(:query_parameters)
       end
-      # Include Helpers in ActionController and ActionView
-      ActionController::Base.send :include, EenyMeeny::ExperimentHelper
-      ActionView::Base.send :include, EenyMeeny::ExperimentHelper
       # Insert Middleware
       app.middleware.insert_before ActionDispatch::Cookies, EenyMeeny::Middleware
+    end
+
+    config.to_prepare do
+      # Include Helpers in ActionController and ActionView
+      ActiveSupport.on_load(:action_controller_base) do
+        include EenyMeeny::ExperimentHelper
+      end
     end
 
     rake_tasks do

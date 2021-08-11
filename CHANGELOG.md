@@ -1,3 +1,11 @@
+### 2.3.0 (2021-08-11)
+
+Changes:
+
+    - Support Rails 6 (PR: #11).
+    - Remove cookies for previous experiment versions (PR: #12).
+    - Update Travis configuration to include Ruby version 2.6 to 2.7.
+
 ### 2.2.2 (2019-04-08)
 
 Bugfixes:

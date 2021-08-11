@@ -1,7 +1,13 @@
+require 'active_support/concern'
 require 'eeny-meeny/models/cookie'
 require 'eeny-meeny/models/experiment'
 
 module EenyMeeny::ExperimentHelper
+  extend ActiveSupport::Concern
+
+  included do
+    helper_method :participates_in?, :smoke_test?
+  end
 
   def participates_in?(experiment_id, variation_id: nil)
     experiment = EenyMeeny::Experiment.find_by_id(experiment_id)
