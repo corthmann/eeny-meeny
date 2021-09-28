@@ -43,6 +43,24 @@ The following configurations are available:
       :name: Variation B
       :weight: 0.2
       :custom_attribute: B is an all-star!
+
+# Example of an experiment which is only evaluated for a user if the dependent
+# smoke test cookie is present in the request cookies
+:experiment_2:
+  :name: Awesome Experiment dependent on a smoke test
+  :version: 1
+  :smoke_test_dependency: :only_logged_in_users
+  :start_at: '2026-08-11T11:55:40Z'
+  :end_at: '2026-08-11T11:55:40Z'
+  :variations:
+    :a:
+      :name: Variation A
+      :weight: 0.8
+      :custom_attribute: A rocks, B sucks
+    :b:
+      :name: Variation B
+      :weight: 0.2
+      :custom_attribute: B is an all-star!
 ```
 
 Valid cookie attributes:
@@ -106,8 +124,8 @@ Rake tasks
 
 You can execute the rake tasks like this:
 
-* `rake eeny_meeny:cookie:experimet[experiment_id]`
-* `rake eeny_meeny:cookie:experimet_variation[experiment_id, a]`
+* `rake eeny_meeny:cookie:experiment[experiment_id]`
+* `rake eeny_meeny:cookie:experiment[experiment_id, a]`
 * `rake eeny_meeny:cookie:smoke_test[shadow]`
 * `rake eeny_meeny:cookie:smoke_test[shadow,2]`
 
@@ -139,6 +157,7 @@ When setting up a new experiment you need to provide the following information:
 
 * `experiment_id` This is the key that encapsulates the rest of your experiment configuration in the YAML file (see `:experiment_1:` the **Configuration** section).
 * `name` The name/title of your experiment.
+* `smoke_test_dependency` (optional) this experiment will only be evaluated if the smoke test cookie with the id configured in this field is found in the request cookies.
 * `version` (optional) the version of your experiment. Defaults to `1`.
 * `start_at` (optional) the start time of your experiment. Will enable the experiment at the given time.
 * `end_at` (optional) the end time of your experiment. Will disable the experiment at the given time.
@@ -257,6 +276,55 @@ def show
     end
 end
 ```
+Split testing with conditional experiment enabling
+-------------
+This is a particular use case and you can employ it when you want to run an experiment only on users matching a certain criteria. To make it generic, we have introduced the possibility to make experiments depend on a smoke test. As a result, if the smoke_test cookie is not found in the request, the experiment is not activated.
+
+To make use of this feature, you need to make sure eeny meeny is configure with `query_parameters` set to `{ smoke_test: true }` which is actually the default configuration. This is so you can switch the smoke test on through query params.
+
+The last step is to create a middleware and activate the smoke test when your criteria has been met. This example is an initializer under `config/initializers/eeny_meeny_experiments.rb`
+
+```
+# frozen_string_literal: true
+
+require 'rack'
+require 'eeny-meeny/middleware'
+
+class EenyMeenyExperiments
+  SMOKE_TEST_QUERY_PARAM = 'smoke_test_id'
+  EXPERIMENT_2_SMOKE_TEST = 'only_auth_users'
+
+  def initialize(app)
+    @app = app
+  end
+
+  def call(env)
+    request = Rack::Request.new(env)
+
+    # Check if we have a logged in user
+    session = request.session
+    current_user = session[:user] if session.present?
+    current_user_id = current_user[:id] if current_user.present?
+
+    # Does the user come from and email campaign with a user_id in the query params
+    user_id_param = request.params['user_id']
+
+    enable_experiment_2 = current_user_id.present? || user_id_param.present?
+
+    if enable_experiment_2
+      # Adds a param to the request before reaching eeny meeny which will enable the smoke test
+      # the experiment depends on
+      request.update_param(SMOKE_TEST_QUERY_PARAM, EXPERIMENT_2_SMOKE_TEST)
+    end
+
+    @app.call(env)
+  end
+end
+
+Rails.application.config.middleware.insert_before EenyMeeny::Middleware, EenyMeenyExperiments
+```
+
+Once the condition is once met, the user will stay in that bucket even if the condition is not met anymore which is great as it means we continue to offer the same experience to the users even after the conditions have changed. In case you don't want this behavior,
 
 Special thanks
 -------------

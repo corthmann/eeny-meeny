@@ -20,19 +20,27 @@ module EenyMeeny
     end
 
     def call(env)
-      cookies          = Rack::Utils.parse_query(env[HTTP_COOKIE],';,')  { |s| Rack::Utils.unescape(s) rescue s }
       query_parameters = query_hash(env)
       now              = Time.zone.now
       new_cookies      = {}
+      # Prepare smoke tests
+      env, new_cookies = prepare_smoke_test(env, new_cookies, query_parameters)
+      cookies          = Rack::Utils.parse_query(env[HTTP_COOKIE],';,')  { |s| Rack::Utils.unescape(s) rescue s }
       delete_cookies   = find_deprecated_cookies(cookies, now)
       # Prepare for experiments.
       @experiments.each do |experiment|
+        # Skip experiments with unsatisfied smoke test
+        if experiment.smoke_test_dependency.present?
+          smoke_test_cookie_name = EenyMeeny::Cookie.smoke_test_name(experiment.smoke_test_dependency)
+          smoke_test_cookie = EenyMeeny::Cookie.read(cookies[smoke_test_cookie_name])
+
+          next if smoke_test_cookie.nil?
+        end
+
         # Skip inactive experiments
         next unless experiment.active?(now)
         env, new_cookies = prepare_experiment(env, cookies, new_cookies, query_parameters, experiment)
       end
-      # Prepare smoke tests
-      env, new_cookies = prepare_smoke_test(env, new_cookies, query_parameters)
       # Delegate to app
       status, headers, body = @app.call(env)
       response = Rack::Response.new(body, status, headers)
@@ -96,7 +104,7 @@ module EenyMeeny
       return {} unless EenyMeeny.config.query_parameters[:experiment] || EenyMeeny.config.query_parameters[:smoke_test]
       # Query Params are only relevant to HTTP GET requests.
       return {} unless env[REQUEST_METHOD] == 'GET'
-      Rack::Utils.parse_query(env[QUERY_STRING], '&;')
+      Rack::Request.new(env).params
     end
 
     def add_or_replace_http_cookie(env, cookie)

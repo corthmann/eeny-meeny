@@ -157,7 +157,7 @@ describe EenyMeeny::Experiment do
       it 'returns those experiments' do
         instances = described_class.find_all
         expect(instances).to be_a Array
-        expect(instances.size).to eq(3)
+        expect(instances.size).to eq(4)
         instances.each do |instance|
           expect(instance).to be_a EenyMeeny::Experiment
         end

@@ -8,6 +8,17 @@
     :new:
       :name: New My Page
       :weight: 0.98
+:my_page_smoke_test_dependent:
+  :name: My Page with a smoke test dependency
+  :version: 1
+  :smoke_test_dependency: :smoke_flag
+  :variations:
+    :old:
+      :name: Old My Page
+      :weight: 0.02
+    :new:
+      :name: New My Page
+      :weight: 0.98
 :versioned:
   :name: Versioned
   :version: 3

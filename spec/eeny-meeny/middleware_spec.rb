@@ -54,7 +54,7 @@ describe EenyMeeny::Middleware do
       let(:request) { Rack::MockRequest.new(subject) }
 
       before(:example) do
-        @original_request_cookies = 'test=abc;eeny_meeny_my_page_v1=on1tOQ5hiKdA0biVZVwvTUQcmkODacwdpi%2FedQJIYQz9KdWYAXqzCafF5Dqqa6xtHFBdXYVmz%2Bp4%2FigmKz4hBVYZbJU%2FMwBbvYG%2BIoBelk10PxwtyxbA%2BiDzFT4jZeiTkNOmZ3rp1Gzz74JjT4aocqB187p7SrpeM2jfyZ8ZKPOiZs6tXf0QoXkV%2BZbtxJLRPr5lgmGxslfM8vCIm1%2F0HQ%3D%3D;eeny_meeny_versioned_v3=UUgXwn3j0%2BOL2cpov4duTnuCJPc621yHd6GjuXpN0gnYLDASTsDpyk01CnFY5ZYCAo%2BgLO%2BwTbsYObP8dp30rA%3D%3D;'
+        @original_request_cookies = 'test=abc;eeny_meeny_my_page_v1=on1tOQ5hiKdA0biVZVwvTUQcmkODacwdpi%2FedQJIYQz9KdWYAXqzCafF5Dqqa6xtHFBdXYVmz%2Bp4%2FigmKz4hBVYZbJU%2FMwBbvYG%2BIoBelk10PxwtyxbA%2BiDzFT4jZeiTkNOmZ3rp1Gzz74JjT4aocqB187p7SrpeM2jfyZ8ZKPOiZs6tXf0QoXkV%2BZbtxJLRPr5lgmGxslfM8vCIm1%2F0HQ%3D%3D;eeny_meeny_versioned_v3=UUgXwn3j0%2BOL2cpov4duTnuCJPc621yHd6GjuXpN0gnYLDASTsDpyk01CnFY5ZYCAo%2BgLO%2BwTbsYObP8dp30rA%3D%3D;; eeny_meeny_my_page_smoke_test_dependent_v1=Cu1DiGWwMvp1NRbsfBSIm5fJKmUrUWc2yq1qcm3CM7tvXFOjxnT6793wN8wnvVPS9Vn7S7BwSAf1sV7%2F6jFOWQ%3D%3D'
         @response = request.get('/test',
                                 'CONTENT_TYPE' => 'text/plain',
                                 'HTTP_COOKIE' => @original_request_cookies)

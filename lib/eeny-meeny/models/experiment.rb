@@ -10,7 +10,14 @@ module EenyMeeny
       "\\A#{EenyMeeny::Cookie::EXPERIMENT_PREFIX}(.+)_v(\\d+)\\z"
     ).freeze
 
-    attr_reader :id, :name, :version, :variations, :total_weight, :end_at, :start_at
+    attr_reader :id,
+                :name,
+                :version,
+                :variations,
+                :total_weight,
+                :smoke_test_dependency,
+                :end_at,
+                :start_at
 
     def self.find_all
       return [] unless EenyMeeny.config.experiments
@@ -34,10 +41,11 @@ module EenyMeeny
       experiment
     end
 
-    def initialize(id, name: '', version: 1, variations: {}, start_at: nil, end_at: nil)
+    def initialize(id, name: '', version: 1, variations: {}, smoke_test_dependency: nil, start_at: nil, end_at: nil)
       @id = id
       @name = name
       @version = version
+      @smoke_test_dependency = smoke_test_dependency
       @variations = variations.map do |variation_id, variation|
         Variation.new(variation_id, **variation)
       end
