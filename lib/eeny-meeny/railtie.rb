@@ -15,8 +15,20 @@ module EenyMeeny
         config.secure                = app.config.eeny_meeny[:secure]           if app.config.eeny_meeny.key?(:secure)
         config.query_parameters      = app.config.eeny_meeny[:query_parameters] if app.config.eeny_meeny.key?(:query_parameters)
       end
-      # Insert Middleware
-      app.middleware.insert_before ActionDispatch::Cookies, EenyMeeny::Middleware
+
+      experiment_with_dependency = EenyMeeny::Experiment.find_all.detect { |experiment| experiment.smoke_test_dependency.present? }
+
+      if experiment_with_dependency
+        # Insert middleware after the user session is available so that the host can write logic
+        # dependent on the user session. We only do so of we have experiments which depend on
+        # a smoke test as this intrduces a pottential limitation of users not being bucketed
+        # on the first request and the cookie will be available in the controller only
+        # after a page refresh.
+        app.middleware.insert_after ActionDispatch::Session::CookieStore, EenyMeeny::Middleware
+      else
+        # Insert middleware
+        app.middleware.insert_before ActionDispatch::Cookies, EenyMeeny::Middleware
+      end
     end
 
     config.to_prepare do

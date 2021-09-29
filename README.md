@@ -292,29 +292,35 @@ require 'eeny-meeny/middleware'
 
 class EenyMeenyExperiments
   SMOKE_TEST_QUERY_PARAM = 'smoke_test_id'
-  EXPERIMENT_2_SMOKE_TEST = 'only_auth_users'
+  PERSONALIZED_CROSS_SELL_SMOKE_TEST = 'only_auth_users'
 
   def initialize(app)
     @app = app
   end
 
   def call(env)
+    @env = env
+
     request = Rack::Request.new(env)
 
-    # Check if we have a logged in user
-    session = request.session
-    current_user = session[:user] if session.present?
-    current_user_id = current_user[:id] if current_user.present?
-
-    # Does the user come from and email campaign with a user_id in the query params
+    # does the user come from and email campaign with a user_id in the query params
     user_id_param = request.params['user_id']
 
-    enable_experiment_2 = current_user_id.present? || user_id_param.present?
+    enable_personalized_cross_sell = user_id_param.present?
 
-    if enable_experiment_2
-      # Adds a param to the request before reaching eeny meeny which will enable the smoke test
-      # the experiment depends on
-      request.update_param(SMOKE_TEST_QUERY_PARAM, EXPERIMENT_2_SMOKE_TEST)
+    # if no user ID in the params, let's check if the user is signed in
+    unless enable_personalized_cross_sell
+      session = request.session
+
+      # check if we have a logged in user
+      current_user = session[:user]
+      current_user_id = current_user[:id] unless current_user.nil?
+
+      enable_personalized_cross_sell = !current_user_id.nil?
+    end
+
+    if enable_personalized_cross_sell
+      request.update_param(SMOKE_TEST_QUERY_PARAM, PERSONALIZED_CROSS_SELL_SMOKE_TEST)
     end
 
     @app.call(env)
