@@ -32,6 +32,14 @@ module EenyMeeny
       new(experiment_id, **experiment) if experiment
     end
 
+    def self.has_experiments_with_dependency(experiment_id)
+      experiment_with_dependency EenyMeeny::Experiment.find_all.detect do |experiment|
+        experiment.smoke_test_dependency.present?
+      end
+
+      return !experiment_with_dependency.nil?
+    end
+
     def self.find_by_cookie_name(cookie_name)
       return unless cookie_name =~ COOKIE_EXPERIMENT_ID_REGEX
 

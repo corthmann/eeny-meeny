@@ -16,9 +16,7 @@ module EenyMeeny
         config.query_parameters      = app.config.eeny_meeny[:query_parameters] if app.config.eeny_meeny.key?(:query_parameters)
       end
 
-      experiment_with_dependency = EenyMeeny::Experiment.find_all.detect { |experiment| experiment.smoke_test_dependency.present? }
-
-      if experiment_with_dependency
+      if EenyMeeny::Experiment.has_experiments_with_dependency
         # Insert middleware after the user session is available so that the host can write logic
         # dependent on the user session. We only do so of we have experiments which depend on
         # a smoke test as this intrduces a pottential limitation of users not being bucketed
