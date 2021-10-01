@@ -33,7 +33,7 @@ module EenyMeeny
     end
 
     def self.has_experiments_with_dependency
-      experiment_with_dependency EenyMeeny::Experiment.find_all.detect do |experiment|
+      experiment_with_dependency = find_all.detect do |experiment|
         experiment.smoke_test_dependency.present?
       end
 
