@@ -32,7 +32,7 @@ module EenyMeeny
       new(experiment_id, **experiment) if experiment
     end
 
-    def self.has_experiments_with_dependency(experiment_id)
+    def self.has_experiments_with_dependency
       experiment_with_dependency EenyMeeny::Experiment.find_all.detect do |experiment|
         experiment.smoke_test_dependency.present?
       end
