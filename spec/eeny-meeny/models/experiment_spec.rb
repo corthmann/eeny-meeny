@@ -1,27 +1,21 @@
 require 'eeny-meeny/models/experiment'
 require 'eeny-meeny/models/variation'
 
-def experiment_with_time(time = {})
-  experiment_options = {
-      name: 'Test 1',
-      variations: {
-          a: { name: 'A' },
-          b: { name: 'B' }}
-  }.merge(time)
-  described_class.new(:experiment_1,
-                      **experiment_options)
-end
-
 describe EenyMeeny::Experiment do
   describe 'when initialized' do
+    let(:experiment_options) { {} }
+    subject do
+      build_experiment(**experiment_options)
+    end
 
     context 'with weighted variations' do
-      subject do
-        described_class.new(:experiment_1,
-                            name: 'Test 1',
-                            variations: {
-                                a: { name: 'A', weight: 0.5 },
-                                b: { name: 'B', weight: 0.3 }})
+      let(:experiment_options) do
+        {
+          variations: {
+            a: { name: 'A', weight: 0.5 },
+            b: { name: 'B', weight: 0.3 }
+          }
+        }
       end
 
       it 'sets the instance variables' do
@@ -43,14 +37,6 @@ describe EenyMeeny::Experiment do
     end
 
     context 'with non-weighted variations' do
-      subject do
-        described_class.new(:experiment_1,
-                            name: 'Test 1',
-                            variations: {
-                                a: { name: 'A' },
-                                b: { name: 'B' }})
-      end
-
       it 'sets the instance variables' do
         expect(subject.id).to eq(:experiment_1)
         expect(subject.name).to eq('Test 1')
@@ -93,58 +79,68 @@ describe EenyMeeny::Experiment do
 
         context 'when the experiment only have an end_at time' do
           context 'and the current time < end_at' do
+            let(:experiment_options) { { end_at: (Time.zone.now+3600).iso8601 }}
+
             it 'returns true' do
-              instance = experiment_with_time(end_at: (Time.zone.now+3600).iso8601)
-              expect(instance.active?).to be true
+              expect(subject.active?).to be true
             end
           end
 
           context 'and the current time > end_at' do
+            let(:experiment_options) { { end_at: (Time.zone.now-3600).iso8601 }}
+
             it 'returns false' do
-              instance = experiment_with_time(end_at: (Time.zone.now-3600).iso8601)
-              expect(instance.active?).to be false
+              expect(subject.active?).to be false
             end
           end
         end
 
         context 'when the experiment only have a start_at time' do
           context 'and the current time < start_at' do
+            let(:experiment_options) { { start_at: (Time.zone.now+3600).iso8601 } }
+
             it 'returns false' do
-              instance = experiment_with_time(start_at: (Time.zone.now+3600).iso8601)
-              expect(instance.active?).to be false
+              expect(subject.active?).to be false
             end
           end
 
           context 'and the current time > start_at' do
+            let(:experiment_options) { { start_at: (Time.zone.now-3600).iso8601 } }
+
             it 'returns true' do
-              instance = experiment_with_time(start_at: (Time.zone.now-3600).iso8601)
-              expect(instance.active?).to be true
+              expect(subject.active?).to be true
             end
           end
         end
 
         context 'when the experiment both have a start_at and end_at time' do
           context 'and current_time < start_at' do
+            let(:experiment_options) do
+              { start_at: (Time.zone.now+3600).iso8601, end_at: (Time.zone.now+7200).iso8601 }
+            end
+
             it 'returns false' do
-              instance = experiment_with_time(start_at: (Time.zone.now+3600).iso8601,
-                                              end_at: (Time.zone.now+7200).iso8601)
-              expect(instance.active?).to be false
+              expect(subject.active?).to be false
             end
           end
 
           context 'and current_time > start_at and current time < end_at' do
+            let(:experiment_options) do
+              { start_at: (Time.zone.now-3600).iso8601, end_at: (Time.zone.now+7200).iso8601 }
+            end
+
             it 'returns true' do
-              instance = experiment_with_time(start_at: (Time.zone.now-3600).iso8601,
-                                              end_at: (Time.zone.now+7200).iso8601)
-              expect(instance.active?).to be true
+              expect(subject.active?).to be true
             end
           end
 
           context 'and current time > start_at and current time > end_at' do
+            let(:experiment_options) do
+              { start_at: (Time.zone.now-7200).iso8601, end_at: (Time.zone.now-3600).iso8601 }
+            end
+
             it 'returns false' do
-              instance = experiment_with_time(start_at: (Time.zone.now-7200).iso8601,
-                                              end_at: (Time.zone.now-3600).iso8601)
-              expect(instance.active?).to be false
+              expect(subject.active?).to be false
             end
           end
         end

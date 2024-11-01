@@ -11,33 +11,24 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
     Object.new.extend(EenyMeeny::ExperimentHelper)
   end
 
-  let(:request) do
-    Rack::MockSession.new(EenyMeeny::Middleware.new(MockRackApp.new))
-  end
+  let(:app) { EenyMeeny::Middleware.new(MockRackApp.new) }
+  let(:experiment) { EenyMeeny::Experiment.find_by_id(:my_page) }
 
   describe '#participates_in?' do
     context 'given an experiment id' do
-      let(:request_with_cookie) do
-        request.set_cookie(EenyMeeny::Cookie.create_for_experiment(EenyMeeny::Experiment.find_by_id(:my_page)).to_s)
-        request
-      end
-
       context 'of an active experiment' do
         context 'with a valid experiment cookie' do
           it "returns the user's experiment variation" do
-            allow(subject).to receive(:cookies).and_return(request_with_cookie.cookie_jar)
+            get '/test'
+            allow(subject).to receive(:cookies).and_return(current_session.cookie_jar)
             expect(subject.participates_in?(:my_page)).to be_a EenyMeeny::Variation
           end
 
           context 'and given a variation id' do
-            let(:request_with_variation_cookie) do
-              request.set_cookie(EenyMeeny::Cookie.create_for_experiment_variation(EenyMeeny::Experiment.find_by_id(:my_page), :new).to_s)
-              request
-            end
-
             context 'that matches the variation id the cookie' do
               it "returns the user's experiment variation" do
-                allow(subject).to receive(:cookies).and_return(request_with_variation_cookie.cookie_jar)
+                get '/test' , EenyMeeny::Cookie.cookie_name(experiment) => :new
+                allow(subject).to receive(:cookies).and_return(current_session.cookie_jar)
                 expect(subject.participates_in?(:my_page, variation_id: :new)).to be_a EenyMeeny::Variation
                 expect(subject.participates_in?(:my_page, variation_id: 'new')).to be_a EenyMeeny::Variation
               end
@@ -45,7 +36,8 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
 
             context 'that does not match the variation id the cookie' do
               it 'returns nil' do
-                allow(subject).to receive(:cookies).and_return(request_with_variation_cookie.cookie_jar)
+                get '/test', EenyMeeny::Cookie.cookie_name(experiment) => :new
+                allow(subject).to receive(:cookies).and_return(current_session.cookie_jar)
                 expect(subject.participates_in?(:my_page, variation_id: :old)).to be_nil
                 expect(subject.participates_in?(:my_page, variation_id: 'old')).to be_nil
               end
@@ -55,7 +47,7 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
 
         context 'without an experiment cookie' do
           it 'returns nil' do
-            allow(subject).to receive(:cookies).and_return(request.cookie_jar)
+            allow(subject).to receive(:cookies).and_return({})
             expect(subject.participates_in?(:my_page)).to be_nil
           end
         end
@@ -63,13 +55,15 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
 
       context 'of an inactive experiment' do
         context 'with a valid experiment cookie' do
-          let(:request_with_expired_cookie) do
-            request.set_cookie(EenyMeeny::Cookie.create_for_experiment(EenyMeeny::Experiment.find_by_id(:expired)).to_s)
-            request
+          let(:experiment) { EenyMeeny::Experiment.find_by_id(:expired) }
+          let(:cookie_jar) do
+            {
+              "#{EenyMeeny::Cookie.cookie_name(experiment)}" => EenyMeeny::Cookie.create_for_experiment(experiment).to_s
+            }
           end
 
           it 'returns nil' do
-            allow(subject).to receive(:cookies).and_return(request_with_expired_cookie.cookie_jar)
+            allow(subject).to receive(:cookies).and_return(cookie_jar)
             expect(subject.participates_in?(:expired)).to be_nil
           end
         end
@@ -77,7 +71,8 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
 
       context 'that does not exist among the experiments' do
         it 'returns nil' do
-          allow(subject).to receive(:cookies).and_return(request_with_cookie.cookie_jar)
+          get '/test'
+          allow(subject).to receive(:cookies).and_return(current_session.cookie_jar)
           expect(subject.participates_in?(:this_does_not_exist)).to be_nil
         end
       end
@@ -86,21 +81,17 @@ describe EenyMeeny::ExperimentHelper, experiments: true do
 
   describe '#smoke_test?' do
     context 'given a smoke test id' do
-      let(:request_with_smoke_test) do
-        request.set_cookie(EenyMeeny::Cookie.create_for_smoke_test(:my_smoke_test).to_s)
-        request
-      end
-
       context 'and a request with a valid smoke test cookie' do
         it 'returns the smoke test' do
-          allow(subject).to receive(:cookies).and_return(request_with_smoke_test.cookie_jar)
+          get '/test', smoke_test_id: "my_smoke_test"
+          allow(subject).to receive(:cookies).and_return(current_session.cookie_jar)
           expect(subject.smoke_test?(:my_smoke_test)).to be
         end
       end
 
       context 'and a request without a smoke test cookie' do
         it 'returns nil' do
-          allow(subject).to receive(:cookies).and_return(request.cookie_jar)
+          allow(subject).to receive(:cookies).and_return({})
           expect(subject.smoke_test?(:my_smoke_test)).to be_nil
         end
       end
