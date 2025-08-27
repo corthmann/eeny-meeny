@@ -1,5 +1,6 @@
 require 'rack'
 require 'time'
+require 'active_support'
 require 'active_support/time'
 require 'eeny-meeny/models/experiment'
 require 'eeny-meeny/models/encryptor'
@@ -8,11 +9,6 @@ require 'eeny-meeny/models/cookie'
 module EenyMeeny
   class Middleware
 
-    # Headers
-    HTTP_COOKIE    = 'HTTP_COOKIE'.freeze
-    REQUEST_METHOD = 'REQUEST_METHOD'.freeze
-    QUERY_STRING   = 'QUERY_STRING'.freeze
-
     def initialize(app)
       @app = app
       @experiments = EenyMeeny::Experiment.find_all
@@ -20,7 +16,7 @@ module EenyMeeny
     end
 
     def call(env)
-      cookies          = Rack::Utils.parse_query(env[HTTP_COOKIE],';,')  { |s| Rack::Utils.unescape(s) rescue s }
+      cookies          = Rack::Utils.parse_query(env[Rack::HTTP_COOKIE],';,')  { |s| Rack::Utils.unescape(s) rescue s }
       query_parameters = query_hash(env)
       now              = Time.zone.now
       new_cookies      = {}
@@ -95,17 +91,17 @@ module EenyMeeny
       # Query Params are only relevant if EenyMeeny.config have them enabled.
       return {} unless EenyMeeny.config.query_parameters[:experiment] || EenyMeeny.config.query_parameters[:smoke_test]
       # Query Params are only relevant to HTTP GET requests.
-      return {} unless env[REQUEST_METHOD] == 'GET'
-      Rack::Utils.parse_query(env[QUERY_STRING], '&;')
+      return {} unless env[Rack::REQUEST_METHOD] == 'GET'
+      Rack::Utils.parse_query(env[Rack::QUERY_STRING], '&;')
     end
 
     def add_or_replace_http_cookie(env, cookie)
       cookie_name_escaped = Rack::Utils.escape(cookie.name)
       cookie_string = "#{cookie_name_escaped}=#{Rack::Utils.escape(cookie.value)}"
-      env[HTTP_COOKIE] = '' if env[HTTP_COOKIE].nil?
-      return env if env[HTTP_COOKIE].sub!(/#{Regexp.escape(cookie_name_escaped)}=[^;]+/, cookie_string)
-      env[HTTP_COOKIE] += '; ' unless env[HTTP_COOKIE].empty?
-      env[HTTP_COOKIE] += cookie_string
+      env[Rack::HTTP_COOKIE] = '' if env[Rack::HTTP_COOKIE].nil?
+      return env if env[Rack::HTTP_COOKIE].sub!(/#{Regexp.escape(cookie_name_escaped)}=[^;]+/, cookie_string)
+      env[Rack::HTTP_COOKIE] += '; ' unless env[Rack::HTTP_COOKIE].empty?
+      env[Rack::HTTP_COOKIE] += cookie_string
       env
     end
   end

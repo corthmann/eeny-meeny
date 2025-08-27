@@ -1,3 +1,13 @@
+### 2.4.0 (2025-08-27)
+
+Changes:
+
+    - Support Rails 7.
+    - Support rack 3.x.
+    - Drop support for rack 1.x.
+    - Use header constants from rack to support header case-change from rack 2.x to 3.x.
+    - Changed default "same_site" cookie config from "strict" to "lax".
+
 ### 2.3.0 (2021-08-11)
 
 Changes:

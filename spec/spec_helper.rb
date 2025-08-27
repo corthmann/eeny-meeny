@@ -1,11 +1,16 @@
 require 'simplecov'
+require 'active_support'
 require 'active_support/time'
 require 'rspec'
+require 'rack/test'
 require 'yaml'
 require 'mock_rack_app'
 require 'eeny-meeny'
 
+Dir["spec/support/**/*.rb"].each { |f| require File.expand_path(f) }
+
 RSpec.configure do |config|
+  config.include Rack::Test::Methods
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = "random"

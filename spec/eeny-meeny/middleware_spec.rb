@@ -1,7 +1,7 @@
 require 'eeny-meeny/models/encryptor'
 require 'eeny-meeny/middleware'
 
-def initialize_app(secure: true, secret: 'test', path: '/', same_site: :strict)
+def initialize_app(secure: true, secret: 'test', path: '/', same_site: :lax)
   EenyMeeny.reset!
   EenyMeeny.configure do |config|
     config.cookies     = { path: path, same_site: same_site }
@@ -10,6 +10,16 @@ def initialize_app(secure: true, secret: 'test', path: '/', same_site: :strict)
     config.secure      = secure
   end
   described_class.new(app)
+end
+
+def request_options(http_cookie_header: nil)
+  options = {
+    'CONTENT_TYPE' => 'text/plain',
+    lint: true
+  }
+  return options unless http_cookie_header
+
+  options.merge({ Rack::HTTP_COOKIE => http_cookie_header })
 end
 
 describe EenyMeeny::Middleware do
@@ -40,13 +50,13 @@ describe EenyMeeny::Middleware do
       end
 
       it "sets the 'HTTP_COOKIE' header on the request" do
-        expect(app['HTTP_COOKIE']).to be
-        expect(app['HTTP_COOKIE'].length).to be > 0
+        expect(app[Rack::HTTP_COOKIE]).to be
+        expect(app[Rack::HTTP_COOKIE].length).to be > 0
       end
 
       it "sets the 'Set-Cookie' header on the response" do
-        expect(@response['Set-Cookie']).to be
-        expect(@response['Set-Cookie'].length).to be > 0
+        expect(@response[Rack::SET_COOKIE]).to be
+        expect(@response[Rack::SET_COOKIE].length).to be > 0
       end
     end
 
@@ -56,16 +66,15 @@ describe EenyMeeny::Middleware do
       before(:example) do
         @original_request_cookies = 'test=abc;eeny_meeny_my_page_v1=on1tOQ5hiKdA0biVZVwvTUQcmkODacwdpi%2FedQJIYQz9KdWYAXqzCafF5Dqqa6xtHFBdXYVmz%2Bp4%2FigmKz4hBVYZbJU%2FMwBbvYG%2BIoBelk10PxwtyxbA%2BiDzFT4jZeiTkNOmZ3rp1Gzz74JjT4aocqB187p7SrpeM2jfyZ8ZKPOiZs6tXf0QoXkV%2BZbtxJLRPr5lgmGxslfM8vCIm1%2F0HQ%3D%3D;eeny_meeny_versioned_v3=UUgXwn3j0%2BOL2cpov4duTnuCJPc621yHd6GjuXpN0gnYLDASTsDpyk01CnFY5ZYCAo%2BgLO%2BwTbsYObP8dp30rA%3D%3D;'
         @response = request.get('/test',
-                                'CONTENT_TYPE' => 'text/plain',
-                                'HTTP_COOKIE' => @original_request_cookies)
+                                request_options(http_cookie_header: @original_request_cookies))
       end
 
       it "does not change the 'HTTP_COOKIE' header on the request" do
-        expect(app['HTTP_COOKIE']).to eq(@original_request_cookies)
+        expect(app[Rack::HTTP_COOKIE]).to eq(@original_request_cookies)
       end
 
       it "does not set the 'Set-Cookie' header on the response" do
-        expect(@response['Set-Cookie']).to be nil
+        expect(@response[Rack::SET_COOKIE]).to be nil
       end
     end
 
@@ -73,19 +82,18 @@ describe EenyMeeny::Middleware do
       let(:request) { Rack::MockRequest.new(subject) }
       let(:cookie_value) { 'eeny_meeny_undefined_experiment_v1=thevaluedoesntmatter' }
       let(:return_value) do
-        "#{cookie_value}; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict"
+        'eeny_meeny_undefined_experiment_v1=; path=/; max-age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; samesite=lax'
       end
 
       before(:example) do
         @original_request_cookies = "test=abc;#{cookie_value};"
         @response = request.get('/test',
-                                'CONTENT_TYPE' => 'text/plain',
-                                'HTTP_COOKIE' => @original_request_cookies)
+                                request_options(http_cookie_header: @original_request_cookies))
       end
 
 
       it "instructs the browser to remove through the 'Set-Cookie' header on the response" do
-        expect(@response['Set-Cookie']).to include(return_value)
+        expect(@response[Rack::SET_COOKIE]).to include(return_value)
       end
     end
 
@@ -97,18 +105,17 @@ describe EenyMeeny::Middleware do
       end
 
       it 'selects the correct variation' do
-        expect(app['HTTP_COOKIE']).to include('eeny_meeny_my_page_v1=old')
-        expect(app['HTTP_COOKIE']).to_not include('eeny_meeny_my_page_v1=new')
+        expect(app[Rack::HTTP_COOKIE]).to include('eeny_meeny_my_page_v1=old')
+        expect(app[Rack::HTTP_COOKIE]).to_not include('eeny_meeny_my_page_v1=new')
       end
 
       it "sets the 'HTTP_COOKIE' header on the request" do
-        expect(app['HTTP_COOKIE']).to be
-        expect(app['HTTP_COOKIE']).to include('eeny_meeny_my_page_v1=')
+        expect(app[Rack::HTTP_COOKIE]).to be
+        expect(app[Rack::HTTP_COOKIE]).to include('eeny_meeny_my_page_v1=')
       end
 
       it "sets the 'Set-Cookie' header on the response" do
-        expect(@response['Set-Cookie']).to be
-        expect(@response['Set-Cookie']).to include('eeny_meeny_my_page_v1=')
+        expect_set_cookie_with(response: @response, value: 'eeny_meeny_my_page_v1=')
       end
     end
 
@@ -120,15 +127,13 @@ describe EenyMeeny::Middleware do
       end
 
       it "sets the 'HTTP_COOKIE' header on the request" do
-        expect(app['HTTP_COOKIE']).to be
-        expect(app['HTTP_COOKIE']).to include('smoke_test_my_smoke_test_v1=')
+        expect(app[Rack::HTTP_COOKIE]).to be
+        expect(app[Rack::HTTP_COOKIE]).to include('smoke_test_my_smoke_test_v1=')
       end
 
       it "sets the 'Set-Cookie' header on the response" do
-        expect(@response['Set-Cookie']).to be
-        expect(@response['Set-Cookie']).to include('smoke_test_my_smoke_test_v1=')
+        expect_set_cookie_with(response: @response, value: 'smoke_test_my_smoke_test_v1=')
       end
     end
   end
-
 end

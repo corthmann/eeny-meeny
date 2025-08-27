@@ -1,5 +1,6 @@
 require 'eeny-meeny/models/cookie'
 require 'eeny-meeny/models/variation'
+require 'active_support'
 require 'active_support/time'
 require 'active_support/core_ext/enumerable'
 
